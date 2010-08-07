@@ -6,7 +6,7 @@ VERSION=$3
 GIT_COMMITTER_DATE=$4
 
 pushd ${SOURCE_DIR}
-git checkout rel_${VERSION}
+git checkout rel-${VERSION}
 popd
 
 pushd ${TARGET_DIR}
