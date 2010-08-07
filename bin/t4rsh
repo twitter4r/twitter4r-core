@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+require("irb")
+require("irb/completion")
+require("rubygems")
+
+begin
+  gem('twitter4r', '>0.3.0')
+  require("twitter")
+  require("twitter/console")
+rescue Gem::LoadError
+  begin
+    gem("mbbx6spp-twitter4r", '>=0.3.1')
+    require("twitter")
+    require("twitter/console")
+  rescue Gem::LoadError
+    abort("Error: You must install either twitter4r gem from Rubyforge with version 0.3.1 or greater or the mbbx6spp-twitter4r gem from GitHub's servers with version 0.3.1 or greater (and make sure it is a recent version of the gem).")
+  end
+end
+
+module Twitter
+  class Console
+    class << self
+      @@OPTIONS = { :debugger => false, :config => "~/.twitter4r/accounts.yml" }
+      def parse_options
+        OptionParser.new do |opt|
+          opt.banner = "Usage: t4rsh [environment] [options]"
+          opt.on("--config=[~/.twitter4r/accounts.yml]", 'Use a specific config file.') { |v| @@OPTIONS[:config] = v }
+          opt.parse!(ARGV)
+        end
+      end
+
+      def config_file
+        result = ENV["T4R_CONFIG"]
+        file_name = File.expand_path('twitter.yml')
+        result ||= file_name if File.exists?(file_name)
+        file_name = File.expand_path('twitter.yml', 'config')
+        result ||= file_name if File.exists?(file_name)
+        file_name = File.expand_path('~/.twitter.yml')
+        result ||= file_name if File.exists?(file_name)
+        result
+      end
+
+      def account
+        ENV["T4R_ENV"] || ENV["MERB_ENV"] || ENV["RAILS_ENV"]
+      end
+
+      def run(file)
+        IRB.init_config(nil)
+        # configuration...
+        IRB.conf[:IRB_NAME] = "t4rsh"
+        IRB.conf[:VERSION] = Twitter::Version.to_version
+        IRB.conf[:USE_READLINE] = true
+        IRB.conf[:PROMPT_MODE] = :T4RSH
+        IRB.conf[:PROMPT][:T4RSH] = {
+          :PROMPT_I => "%N[%3n:%i]> ", # top level prompt
+          :PROMPT_C => "%N[%3n:%i]* ", # after conditional like "if"
+          :PROMPT_S => "%N[%3n:%i]* ", # during continuing string
+          :RETURN => "=> %s\n", # return value
+        }
+        IRB.start(file)
+      end
+    end
+  end
+end
+
+#if __FILE__ == $0
+  @twitter = nil
+  config_file = Twitter::Console.config_file
+  account = Twitter::Console.account
+
+  if config_file && account
+    @twitter = Twitter::Client.from_config(config_file, account)
+    puts "Used #{config_file} to create client for #{account} account."
+    puts "Access @twitter for instantiated client."
+    Twitter::Console.run(__FILE__)
+  else
+    abort("Please make sure #{config_file} exists and contains your Twitter credentials (separated by account/environment) and that you specify the account/environment to use, e.g. if you have a 'test' section in your configuration file that you want to use set/export T4R_ENV=test as an environment variable or RAILS_ENV=test or MERB_ENV=test")
+  end
+#end
