@@ -19,5 +19,5 @@ rm -rf ${TARGET_DIR}/{web,marketing} ${TARGET_DIR}/config/twitter.yml
 pushd ${TARGET_DIR}
 git add .
 git commit -m "Added v ${VERSION} snapshot."
-git tag -s twitter4r-v${UVERSION} -m "Tagged version ${VERSION}"
+git tag -s twitter4r-v${VERSION} -m "Tagged version ${VERSION}"
 popd
