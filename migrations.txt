@@ -1,0 +1,9 @@
+#!/bin/bash
+
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.1.0 "2007-05-06 21:54" 
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.1.1 "2007-06-25 17:20"
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.2.0 "2007-07-08 18:51"
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.2.1 "2007-07-18 17:44"
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.2.2 "2007-07-18 17:44"
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.2.3 "2007-07-27 15:44"
+./bin/migrate-svn-snapshot.sh ../twitter4r.svn . 0.2.4 "2007-07-27 15:44"
