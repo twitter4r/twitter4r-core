@@ -1,0 +1,11 @@
+= Changes
+
+== 207-06-25
+* Added SSL and Proxy support (#11 and #12)
+
+== 2007-05-06
+* Initial revision of codebase commited; includes:
+  - 80% Twitter API feature-completeness
+  - 100% RSpec C0 code coverage
+  - Rake tasks for: RSpec, RCov, RDoc, Gem, Rubyforge Publishing, etc.
+
