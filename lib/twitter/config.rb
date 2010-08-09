@@ -16,6 +16,7 @@ module Twitter
   # * <tt>application_version</tt> - version of your client application.  Defaults to current <tt>Twitter::Version.to_version</tt>.
   # * <tt>application_url</tt> - URL of your client application.  Defaults to http://twitter4r.rubyforge.org.
   # * <tt>source</tt> - the source id given to you by Twitter to identify your application in their web interface.  Note: you must contact Twitter.com developer directly so they can configure their servers appropriately.
+  # * <tt>timeout</tt> - the timeout in second for HTTP requests.
   class Config
     include ClassUtilMixin
     @@ATTRIBUTES = [
@@ -34,6 +35,7 @@ module Twitter
       :application_version,
       :application_url,
       :source,
+      :timeout,
     ]
     attr_accessor *@@ATTRIBUTES
     
@@ -62,6 +64,7 @@ module Twitter
                    :application_version => Twitter::Version.to_version,
                    :application_url => 'http://twitter4r.rubyforge.org',
                    :source => 'twitter4r',
+                   :timeout => 20,
     }
     @@config = Twitter::Config.new(@@defaults)
 

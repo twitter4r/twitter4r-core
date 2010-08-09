@@ -98,6 +98,7 @@ def mas_net_http(response, obj_stubs = {})
   http.stub!(:start).and_yield(http)
   http.stub!(:use_ssl=)
   http.stub!(:verify_mode=)
+  http.stub!(:read_timeout=)
   http
 end
 
@@ -129,7 +130,7 @@ end
 # stubs given <tt>obj_stubs</tt> for endo-specing.
 # 
 def mas_net_http_response(status = :success, 
-                          body = '', 
+                          body = '{}', 
                           obj_stubs = {})
   response = Spec::Mocks::Mock.new(Net::HTTPResponse)
   response.stub!(:body).and_return(body)

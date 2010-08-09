@@ -8,6 +8,10 @@ class Twitter::Client
 
   protected
     attr_accessor :login, :password
+
+    def credentials_given?
+      !!(@login && @password)
+    end
     
     # Returns the response of the HTTP connection.  
     def http_connect(body = nil, require_auth = true, service = :rest, &block)
@@ -63,6 +67,7 @@ class Twitter::Client
         conn.use_ssl = true
         conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
+      conn.read_timeout = @@config.timeout
       conn
     end
 
