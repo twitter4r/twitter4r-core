@@ -240,3 +240,18 @@ describe Twitter::Client, "#bless_models" do
     nilize(@twitter, @models)
   end
 end
+
+describe Twitter::Client, "#credentials_given?" do
+  before(:each) do
+    @client_with_credentials = client_context
+    @client_witout_credentials = Twitter::Client.new
+  end
+
+  it "should return true on client object with credentials set" do
+    @client_with_credentials.send(:credentials_given?).should be(true)
+  end
+
+  it "should return false on client object without credentials set" do
+    @client_witout_credentials.send(:credentials_given?).should be(false)
+  end
+end
