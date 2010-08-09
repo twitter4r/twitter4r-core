@@ -16,11 +16,12 @@ spec:
 #  - twitter4r
   add_dependency:
     json: >=1.1.1
+    oauth: >=0.4.1
   requirements:
-  - Ruby 1.8.4+
+  - Ruby 1.8.6+
   - json gem, version 0.4.3 or higher
   - jcode (for unicode support)
-  required_ruby_version: >=1.8.2
+  required_ruby_version: >=1.8.6
   author: Susan Potter
   email: twitter4r-users@googlegroups.com
   homepage: http://twitter4r.rubyforge.org

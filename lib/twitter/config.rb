@@ -12,11 +12,14 @@ module Twitter
   # * <tt>proxy_user</tt> - proxy username to use.  Defaults to nil.
   # * <tt>proxy_pass</tt> - proxy password to use.  Defaults to nil.
   # * <tt>user_agent</tt> - user agent string to use for each request of the HTTP header.
-  # * <tt>application_name</tt> - name of your client application.  Defaults to 'Twitter4R'
+  # * <tt>application_name</tt> - name of your client application.  Defaults to 'Twitter4R'.
   # * <tt>application_version</tt> - version of your client application.  Defaults to current <tt>Twitter::Version.to_version</tt>.
   # * <tt>application_url</tt> - URL of your client application.  Defaults to http://twitter4r.rubyforge.org.
   # * <tt>source</tt> - the source id given to you by Twitter to identify your application in their web interface.  Note: you must contact Twitter.com developer directly so they can configure their servers appropriately.
   # * <tt>timeout</tt> - the timeout in second for HTTP requests.
+  # * <tt>oauth_request_token_path</tt> - the URI path for Twitter API's OAuth request token call. Not usually necessary to override.
+  # * <tt>oauth_access_token_path</tt> - the URI path for Twitter API's OAuth access token call. Not usually necessary to override.
+  # * <tt>oauth_authorize_path</tt> - the URI path for Twitter API's OAuth authorize call. Not usually necessary to override.
   class Config
     include ClassUtilMixin
     @@ATTRIBUTES = [
@@ -36,7 +39,11 @@ module Twitter
       :application_url,
       :source,
       :timeout,
+      :oauth_request_token_path,
+      :oauth_access_token_path,
+      :oauth_authorize_path,
     ]
+
     attr_accessor *@@ATTRIBUTES
     
     # Override of Object#eql? to ensure RSpec specifications run 
@@ -65,6 +72,9 @@ module Twitter
                    :application_url => 'http://twitter4r.rubyforge.org',
                    :source => 'twitter4r',
                    :timeout => 20,
+                   :oauth_request_token_path => '/oauth/request_token',
+                   :oauth_access_token_path => '/oauth/access_token',
+                   :oauth_authorize_path => '/oauth/authorize',
     }
     @@config = Twitter::Config.new(@@defaults)
 
