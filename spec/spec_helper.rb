@@ -41,11 +41,9 @@ def stubbed_twitter_config(config, attrs = {})
     :proxy_host => 'proxy.host',
     :proxy_port => 8080,
   }.merge(attrs)
-  config.stub!(:protocol).and_return(opts[:protocol])
-  config.stub!(:host).and_return(opts[:host])
-  config.stub!(:port).and_return(opts[:port])
-  config.stub!(:proxy_host).and_return(opts[:proxy_host])
-  config.stub!(:proxy_port).and_return(opts[:proxy_port])
+  opts.keys.each do |key|
+    config.stub!(key).and_return(opts[key])
+  end
   config
 end
 
