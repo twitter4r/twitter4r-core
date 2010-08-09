@@ -15,6 +15,7 @@ Code:
 * Christian Johansen <christian at cjohansen dot no> - in_reply_to attributes in Twitter::Status
 * Harry Love <harrylove at gmail dot com> - added attributes to Twitter::Status
 * Filipe Giusti <filipegiusti at gmail dot com> - fixed users/show issue that Twitter.com changed from under us
+* Seth Cousins <seth.cousins at gmail dot com> - added HTTP timeout option
 
 Design Suggestions:
 * Bosco So <rubymeetup at boscoso dot com> - making Twitter::Error a RuntimeError instead of an Exception to prevent irb from crashing out.
