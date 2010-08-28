@@ -44,7 +44,8 @@ class Twitter::Client
     	response = http_connect {|conn| create_http_delete_request(uri, :id => value.to_i) }
     when :reply
       return nil if (!value.is_a?(Hash) || !value[:status] || !value[:in_reply_to_status_id])
-      response = http_connect(value.merge(:source => @@config.source).to_http_str) {|conn| create_http_post_request(uri) }
+      params = value.merge(:source => @@config.source)
+      response = http_connect(params.to_http_str) {|conn| create_http_post_request(uri) }
     end
     bless_model(Twitter::Status.unmarshal(response.body))
   end

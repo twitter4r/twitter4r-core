@@ -21,7 +21,11 @@ require('net/https')
 require('uri')
 require('cgi')
 require('json')
-require('yaml')
+require('oauth')
+
+if RUBY_VERSION < "1.9.0"
+  require('yaml')
+end
 
 # Ordering matters...pay attention here!
 require_local('twitter/ext')

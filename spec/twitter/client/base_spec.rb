@@ -243,7 +243,7 @@ end
 
 describe Twitter::Client, "#credentials_given?" do
   before(:each) do
-    @client_with_credentials = client_context
+    @client_with_credentials = Twitter::Client.new(:login => "somelogin", :password => "somepassword")
     @client_witout_credentials = Twitter::Client.new
   end
 

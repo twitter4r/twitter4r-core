@@ -78,7 +78,7 @@ describe Twitter::Client, "#status" do
   
   it "should create expected HTTP POST request for :reply case" do
     @twitter.should_receive(:create_http_post_request).with(@uris[:reply]).and_return(@request)
-    @connection.should_receive(:request).with(@request, {:status => @message, :source => @source, :in_reply_to_status_id => @reply_to_status_id}.to_http_str).and_return(@response)
+    @connection.should_receive(:request).with(@request, "status=This+is+my+unique+message&in_reply_to_status_id=3495293&source=twitter4r").and_return(@response)
     @twitter.status(:reply, :status => @message, :in_reply_to_status_id => @reply_to_status_id)
   end
   
