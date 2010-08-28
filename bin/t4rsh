@@ -21,15 +21,6 @@ end
 module Twitter
   class Console
     class << self
-      @@OPTIONS = { :debugger => false, :config => "~/.twitter4r/accounts.yml" }
-      def parse_options
-        OptionParser.new do |opt|
-          opt.banner = "Usage: t4rsh [environment] [options]"
-          opt.on("--config=[~/.twitter4r/accounts.yml]", 'Use a specific config file.') { |v| @@OPTIONS[:config] = v }
-          opt.parse!(ARGV)
-        end
-      end
-
       def config_file
         result = ENV["T4R_CONFIG"]
         file_name = File.expand_path('twitter.yml')
@@ -64,7 +55,7 @@ module Twitter
   end
 end
 
-#if __FILE__ == $0
+if __FILE__ == $0
   @twitter = nil
   config_file = Twitter::Console.config_file
   account = Twitter::Console.account
@@ -77,4 +68,4 @@ end
   else
     abort("Please make sure #{config_file} exists and contains your Twitter credentials (separated by account/environment) and that you specify the account/environment to use, e.g. if you have a 'test' section in your configuration file that you want to use set/export T4R_ENV=test as an environment variable or RAILS_ENV=test or MERB_ENV=test")
   end
-#end
+end
