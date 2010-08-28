@@ -17,6 +17,8 @@ module Twitter
   # * <tt>application_url</tt> - URL of your client application.  Defaults to http://twitter4r.rubyforge.org.
   # * <tt>source</tt> - the source id given to you by Twitter to identify your application in their web interface.  Note: you must contact Twitter.com developer directly so they can configure their servers appropriately.
   # * <tt>timeout</tt> - the timeout in second for HTTP requests.
+  # * <tt>oauth_consumer_token</tt> - the OAuth consumer token for your application
+  # * <tt>oauth_consumer_secret</tt> - the OAuth consumer secret for your application
   # * <tt>oauth_request_token_path</tt> - the URI path for Twitter API's OAuth request token call. Not usually necessary to override.
   # * <tt>oauth_access_token_path</tt> - the URI path for Twitter API's OAuth access token call. Not usually necessary to override.
   # * <tt>oauth_authorize_path</tt> - the URI path for Twitter API's OAuth authorize call. Not usually necessary to override.
@@ -39,6 +41,8 @@ module Twitter
       :application_url,
       :source,
       :timeout,
+      :oauth_consumer_token,
+      :oauth_consumer_secret,
       :oauth_request_token_path,
       :oauth_access_token_path,
       :oauth_authorize_path,

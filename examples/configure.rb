@@ -40,4 +40,11 @@
 #    # http://groups.google.com/group/twitter4r-users/browse_thread/thread/c655457fdb127032
 #    conf.source = "your-source-id-that-twitter-recognizes"
 #  
+#    # OAuth settings for your application and the Twitter REST API URIs
+#    conf.oauth_consumer_token = "<YOUR APP'S CONSUMER TOKEN HERE>"
+#    conf.oauth_consumer_secret = "<YOUR APP'S CONSUMER SECRETE HERE>"
+#    # You shouldn't need to change the default URIs for the Twitter REST API unless Twitter changes them
+#    conf.oauth_request_token_path = "/oauth/request_token2"
+#    conf.oauth_access_token_path = "/oauth/access_token2"
+#    conf.oauth_authorize_path = "/oauth/authorize"
 #  end
