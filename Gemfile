@@ -6,4 +6,7 @@ end
 
 group :test do
   gem "rspec"
+  gem "ZenTest"
+  gem "code_statistics"
+  gem "rcov"
 end
