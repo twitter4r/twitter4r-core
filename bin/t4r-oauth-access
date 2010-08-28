@@ -1,0 +1,89 @@
+#!/usr/bin/env ruby
+
+require("irb")
+require("irb/completion")
+require("rubygems")
+
+begin
+  gem('twitter4r', '>0.3.0')
+  require("twitter")
+  require("twitter/console")
+  require("pp")
+rescue Gem::LoadError
+  begin
+    gem("mbbx6spp-twitter4r", '>=0.3.1')
+    require("twitter")
+    require("twitter/console")
+    require("pp")
+  rescue Gem::LoadError
+    abort("Error: You must install either twitter4r gem from Rubyforge with version 0.3.1 or greater or the mbbx6spp-twitter4r gem from GitHub's servers with version 0.3.1 or greater (and make sure it is a recent version of the gem).")
+  end
+end
+
+module Twitter
+  class OAuthAccess
+    class << self
+      @@OPTIONS = { :key => "", :secret => "" }
+      def parse_options!
+        OptionParser.new do |opt|
+          opt.banner = "Usage: t4r-oauth-access [environment] [options]"
+          opt.on("--key=[<YOUR KEY>]", 'Use this OAuth consumer key.') { |v| @@OPTIONS[:key] = v }
+          opt.on("--secret=[<YOUR SECRET>]", 'Use this OAuth consumer secret.') { |v| @@OPTIONS[:secret] = v }
+          opt.parse!(ARGV)
+        end
+      end
+
+      def config_file
+        result = ENV["T4R_CONFIG"]
+        file_name = File.expand_path('twitter.yml')
+        result ||= file_name if File.exists?(file_name)
+        file_name = File.expand_path('twitter.yml', 'config')
+        result ||= file_name if File.exists?(file_name)
+        file_name = File.expand_path('~/.twitter.yml')
+        result ||= file_name if File.exists?(file_name)
+        result
+      end
+
+      def account
+        ENV["T4R_ENV"] || ENV["MERB_ENV"] || ENV["RAILS_ENV"]
+      end
+
+      def run()
+        # TODO: fill in here
+        consumer = OAuth::Consumer.new(@@OPTIONS[:key], @@OPTIONS[:secret],
+                                       :site => "https://twitter.com")
+        rtoken = consumer.get_request_token
+        puts "1. Visit this URL to grant your application authorization:"
+        puts "   >> #{rtoken.authorize_url}"
+        puts "2. When you have authorized your application to access your account, Twitter.com will display a PIN to you."
+        print "3. Enter the PIN here: "
+        pin = STDIN.readline.chomp
+        atoken = rtoken.get_access_token(:oauth_verifier => pin)
+        puts "4. Your access token details are:"
+        puts "   >> key:    #{atoken.token}"
+        puts "   >> secret: #{atoken.secret}"
+        resp = atoken.get("/account/verify_credentials.json")
+        data = JSON.parse(resp.body)
+        puts
+        puts "Your account details are:"
+        p data
+      end
+    end
+  end
+end
+
+if __FILE__ == $0
+  @twitter = nil
+  Twitter::OAuthAccess.parse_options!
+  config_file = Twitter::OAuthAccess.config_file
+  account = Twitter::OAuthAccess.account
+
+  if config_file && account
+    @twitter = Twitter::Client.from_config(config_file, account)
+    puts "Used #{config_file} to create client for #{account} account."
+    puts "Follow instructions below to grant authorization to your application and determine access token details."
+    Twitter::OAuthAccess.run()
+  else
+    abort("Please make sure #{config_file} exists and contains your Twitter credentials (separated by account/environment) and that you specify the account/environment to use, e.g. if you have a 'test' section in your configuration file that you want to use set/export T4R_ENV=test as an environment variable or RAILS_ENV=test or MERB_ENV=test")
+  end
+end
