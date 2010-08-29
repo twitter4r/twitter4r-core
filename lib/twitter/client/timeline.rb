@@ -1,12 +1,16 @@
 class Twitter::Client
   @@TIMELINE_URIS = {
     :public => '/statuses/public_timeline.json',
+    :home => '/statuses/home_timeline.json',
     :friends => '/statuses/friends_timeline.json',
     :friend => '/statuses/friends_timeline.json',
     :user => '/statuses/user_timeline.json',
     :me => '/statuses/user_timeline.json',
     :replies => '/statuses/replies.json',
-    :mentions => '/statuses/mentions.json'
+    :mentions => '/statuses/mentions.json',
+    :retweetsbyme => '/statuses/retweeted_by_me.json',
+    :retweetstome => '/statuses/retweeted_to_me.json',
+    :retweetsofme => '/statuses/retweets_of_me.json',
   }
 
   # Provides access to Twitter's Timeline APIs
@@ -62,6 +66,11 @@ class Twitter::Client
   # * +:friend+
   # * +:user+
   # * +:me+
+  # * +:mentions+
+  # * +:replies+
+  # * +:retweetsbyme+
+  # * +:retweetstome+
+  # * +:retweetsofme+
   def timeline_for(type, options = {}, &block)
     raise ArgumentError, "Invalid timeline type: #{type}" unless @@TIMELINE_URIS.keys.member?(type)
     uri = @@TIMELINE_URIS[type]
