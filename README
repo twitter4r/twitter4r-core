@@ -16,6 +16,7 @@ Code:
 * Harry Love <harrylove at gmail dot com> - added attributes to Twitter::Status
 * Filipe Giusti <filipegiusti at gmail dot com> - fixed users/show issue that Twitter.com changed from under us
 * Seth Cousins <seth.cousins at gmail dot com> - added HTTP timeout option and provided a patch that inspired the OAuth support for Twitter4R
+* John McKerrell <@mcknut on twitter> - added geo attribute to Twitter::Message.
 
 Design Suggestions:
 * Bosco So <rubymeetup at boscoso dot com> - making Twitter::Error a RuntimeError instead of an Exception to prevent irb from crashing out.

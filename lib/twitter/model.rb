@@ -165,7 +165,7 @@ module Twitter
       :profile_background_tile, :utc_offset, :time_zone, 
       :following, :notifications, :favourites_count, :followers_count, 
       :friends_count, :statuses_count, :created_at ]
-    attr_accessor *@@ATTRIBUTES
+    attr_accessor(*@@ATTRIBUTES)
 
     class << self
       # Used as factory method callback
@@ -228,7 +228,7 @@ module Twitter
     @@ATTRIBUTES = [:id, :text, :source, :truncated, :created_at, :user, :from_user, :to_user,
                     :favorited, :in_reply_to_status_id, :in_reply_to_user_id,
                     :in_reply_to_screen_name, :geo]
-    attr_accessor *@@ATTRIBUTES
+    attr_accessor(*@@ATTRIBUTES)
 
     class << self
       # Used as factory method callback
@@ -288,8 +288,8 @@ module Twitter
   # Represents a direct message on <tt>Twitter</tt> between <tt>Twitter</tt> users.
   class Message
     include ModelMixin
-    @@ATTRIBUTES = [:id, :recipient, :sender, :text, :created_at]
-    attr_accessor *@@ATTRIBUTES
+    @@ATTRIBUTES = [:id, :recipient, :sender, :text, :geo, :created_at]
+    attr_accessor(*@@ATTRIBUTES)
     
     class << self
       # Used as factory method callback
@@ -350,7 +350,7 @@ module Twitter
   class RateLimitStatus
     include ModelMixin
     @@ATTRIBUTES = [:remaining_hits, :hourly_limit, :reset_time_in_seconds, :reset_time]
-    attr_accessor *@@ATTRIBUTES
+    attr_accessor(*@@ATTRIBUTES)
     
     class << self
       # Used as factory method callback
