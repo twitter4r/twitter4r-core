@@ -36,8 +36,6 @@ class Twitter::Client
       uri = search_request_uri(path)
       if method == :get
         response = atoken.send(method, uri, http_header.merge(headers))
-      else
-        response = atoken.send(method, uri, params, http_header.merge(headers))
       end
     	handle_rest_response(response)
     	response
