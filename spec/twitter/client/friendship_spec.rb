@@ -32,63 +32,63 @@ describe Twitter::Client, "#friend" do
     @connection = mas_net_http(@response)
     Twitter::User.stub!(:unmarshal).and_return(@friend)
   end
-  
+
   def create_uri(action, id)
-  	"#{@uris[action]}/#{id}.json"
+    "#{@uris[action]}/#{id}.json"
   end
-  
+
   it "should create expected HTTP POST request for :add case using integer user ID" do
-  	# the integer user ID scenario...
+    # the integer user ID scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:add, @id)).and_return(@response)
     @twitter.friend(:add, @id)
   end
-  
+
   it "should create expected HTTP POST request for :add case using screen name" do
-  	# the screen name scenario...
+    # the screen name scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:add, @screen_name)).and_return(@response)
     @twitter.friend(:add, @screen_name)
   end
 
-	it "should create expected HTTP GET request for :add case using Twitter::User object" do
-  	# the Twitter::User object scenario...
+  it "should create expected HTTP GET request for :add case using Twitter::User object" do
+    # the Twitter::User object scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:add, @friend.to_i)).and_return(@response)
     @twitter.friend(:add, @friend)
   end
-  
+
   it "should create expected HTTP GET request for :remove case using integer user ID" do
-  	# the integer user ID scenario...
+    # the integer user ID scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:remove, @id)).and_return(@response)
     @twitter.friend(:remove, @id)
   end
 
-	it "should create expected HTTP GET request for :remove case using screen name" do
-  	# the screen name scenario...
+  it "should create expected HTTP GET request for :remove case using screen name" do
+    # the screen name scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:remove, @screen_name)).and_return(@response)
     @twitter.friend(:remove, @screen_name)
   end
 
   it "should create expected HTTP GET request for :remove case using Twitter::User object" do
-  	# the Twitter::User object scenario...
+    # the Twitter::User object scenario...
     @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:remove, @friend.to_i)).and_return(@response)
     @twitter.friend(:remove, @friend)
   end
-  
+
   it "should bless user model returned for :add case" do
     @twitter.should_receive(:bless_model).with(@friend)
     @twitter.friend(:add, @friend)
   end
-  
+
   it "should bless user model returned for :remove case" do
     @twitter.should_receive(:bless_model).with(@friend)
     @twitter.friend(:remove, @friend)
   end
-  
+
   it "should raise ArgumentError if action given is not valid" do
     lambda {
       @twitter.friend(:crap, @friend)
     }.should raise_error(ArgumentError)
   end
-  
+
   after(:each) do
     nilize(@twitter, @id, @uris, @response, @connection)
   end
