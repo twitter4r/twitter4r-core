@@ -15,9 +15,7 @@ class Twitter::Client
     def rest_oauth_connect(method, path, params = {}, headers = {}, require_auth = true)
       atoken = rest_access_token
       uri = rest_request_uri(path)
-#      puts uri
-#      puts params.inspect
-      if method == :get
+      if [:get, :delete].include?(method)
         response = atoken.send(method, uri, http_header.merge(headers))
       else
         response = atoken.send(method, uri, params, http_header.merge(headers))
@@ -96,7 +94,6 @@ class Twitter::Client
     
     def handle_rest_response(response, uri = nil)
       unless response.is_a?(Net::HTTPSuccess)
-#        puts response.body
         raise_rest_error(response, uri)
       end
     end
