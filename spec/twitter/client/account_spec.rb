@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 describe Twitter::Client, "#account_info" do
   before(:each) do
     @uri = Twitter::Client.class_eval("@@ACCOUNT_URIS[:rate_limit_status]")
-    @request = mas_net_http_get(:basic_auth => nil)
+    @request = mas_net_http_get
     @twitter = client_context
     @default_header = @twitter.send(:http_header)
     @response = mas_net_http_response(:success)
@@ -15,7 +15,7 @@ describe Twitter::Client, "#account_info" do
   end
 
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:create_http_get_request).with(@uri).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri).and_return(@response)
     @twitter.account_info
   end
 

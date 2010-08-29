@@ -1,5 +1,4 @@
 class Twitter::Client
-
   @@MESSAGING_URIS = {
     :received => '/direct_messages.json',
     :sent => '/direct_messages/sent.json',
@@ -20,7 +19,7 @@ class Twitter::Client
   def messages(action, options = {})
     raise ArgumentError, "Invalid messaging action: #{action}" unless [:sent, :received].member?(action)
     uri = @@MESSAGING_URIS[action]
-    response = http_connect {|conn|	create_http_get_request(uri, options) }
+    response = rest_oauth_connect(:get, uri, options)
     bless_models(Twitter::Message.unmarshal(response.body))
   end
   
@@ -69,9 +68,9 @@ class Twitter::Client
     user = user.to_i if user and user.is_a?(Twitter::User)
     case action
     when :post
-      response = http_connect({:text => value, :user => user, :source => @@config.source}.to_http_str) {|conn| create_http_post_request(uri) }
+      response = rest_oauth_connect(:post, uri, {:text => value, :user => user, :source => @@config.source})
     when :delete
-      response = http_connect {|conn| create_http_delete_request(uri, :id => value.to_i) }
+      response = rest_oauth_connect(:delete, "#{uri}/#{value.to_i}")
     end
     message = Twitter::Message.unmarshal(response.body)
     bless_model(message)

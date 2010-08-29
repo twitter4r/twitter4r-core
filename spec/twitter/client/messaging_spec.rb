@@ -14,7 +14,7 @@ describe Twitter::Client, "#messages" do
   end
   
   it "should create expected HTTP GET request for :received case" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:received], {}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:received], {}).and_return(@request)
     @twitter.messages(:received)
   end
   
@@ -24,7 +24,7 @@ describe Twitter::Client, "#messages" do
   end
   
   it "should create expected HTTP GET request for :sent case" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:sent], {}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:sent], {}).and_return(@request)
     @twitter.messages(:sent)
   end
   
@@ -46,7 +46,7 @@ describe Twitter::Client, "#messages" do
   end
 
   it "should generate expected GET HTTP request for paging case" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:received], {:page => @page}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:received], {:page => @page}).and_return(@request)
     @twitter.messages(:received, :page => @page)
   end
 
@@ -82,12 +82,13 @@ describe Twitter::Client, "#message" do
   end
   
   it "should invoke #http_connect with expected arguments for :post case" do
-  	@twitter.should_receive(:http_connect).with({:text => @message.text, :user => @message.recipient.to_i, :source => @source}.to_http_str).and_return(@response)
+  	@twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:post], {:text => @message.text, :user => @message.recipient.to_i, :source => @source}).and_return(@response)
     @twitter.message(:post, @message.text, @message.recipient)
   end
   
   it "should create expected HTTP POST request for :post case" do
-    @twitter.should_receive(:create_http_post_request).with(@uris[:post]).and_return(@request)
+    params = {:source => @source, :user => @attributes[:recipient][:id], :text => @attributes[:text]}
+    @twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:post], params).and_return(@request)
     @twitter.message(:post, @message.text, @message.recipient)
   end
   
@@ -97,7 +98,7 @@ describe Twitter::Client, "#message" do
   end
   
   it "should create expected HTTP DELETE request for :delete case" do
-    @twitter.should_receive(:create_http_delete_request).with(@uris[:delete], {:id => @message.to_i}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}/#{@message.to_i}").and_return(@request)
     @twitter.message(:delete, @message)
   end
   

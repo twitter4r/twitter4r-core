@@ -24,12 +24,12 @@ describe Twitter::Client, "Timeline API" do
   end
   
   it "should call #http_get with expected parameters for :public case" do
-    @client.should_receive(:http_connect).and_return(mas_net_http_response(:success, @json))
+    @client.should_receive(:rest_oauth_connect).and_return(mas_net_http_response(:success, @json))
     @client.timeline_for(:public)
   end
   
   it "should yield to block for each status in timeline" do
-    @client.should_receive(:http_connect).and_return(mas_net_http_response(:success, @json))
+    @client.should_receive(:rest_oauth_connect).and_return(mas_net_http_response(:success, @json))
     Twitter::Status.should_receive(:unmarshal).and_return(@timeline)
     count = 0
     @client.timeline_for(:public) do |status|
@@ -40,25 +40,25 @@ describe Twitter::Client, "Timeline API" do
   end
   
   it "should generate expected HTTP GET request for generic :public case" do
-    @client.should_receive(:create_http_get_request).with(@uris[:public], {}).and_return(@request)
+    @client.should_receive(:rest_oauth_connect).with(:get, @uris[:public], {}).and_return(@response)
     timeline = @client.timeline_for(:public)
     timeline.should eql(@timeline)
   end
   
   it "should generate expected HTTP GET request for :public case with expected parameters" do
-    @client.should_receive(:create_http_get_request).with(@uris[:public], @params[:public]).and_return(@request)
+    @client.should_receive(:rest_oauth_connect).with(:get, @uris[:public], @params[:public]).and_return(@response)
     timeline = @client.timeline_for(:public, @params[:public])
     timeline.should eql(@timeline)
   end
   
   it "should generate expected HTTP GET request for generic :friends case" do
-  	@client.should_receive(:create_http_get_request).with(@uris[:friends], {}).and_return(@request)
+  	@client.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {}).and_return(@response)
   	timeline = @client.timeline_for(:friends)
   	timeline.should eql(@timeline)
   end
   
   it "should generate expected HTTP GET request for :friends case with expected parameters" do
-    @client.should_receive(:create_http_get_request).with(@uris[:friends], @params[:friends]).and_return(@request)
+    @client.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], @params[:friends]).and_return(@response)
     timeline = @client.timeline_for(:friends, @params[:friends])
     timeline.should eql(@timeline)
   end

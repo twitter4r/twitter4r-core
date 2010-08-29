@@ -21,37 +21,37 @@ describe Twitter::Client, "#graph(:friends...)" do
   
   it "should create expected HTTP GET request for :friends case using integer user ID" do
   	# the integer user ID scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:friends), :id => @id).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:friends), :id => @id).and_return(@response)
     @twitter.graph(:friends, @id)
   end
   
   it "should create expected HTTP GET request for :friends case using screen name" do
     # the screen name scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:friends), :id => @screen_name).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:friends), :id => @screen_name).and_return(@response)
     @twitter.graph(:friends, @screen_name)
   end
 
   it "should create expected HTTP GET request for :friends case using Twitter::User object" do
     # the Twitter::User object scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:friends), :id => @friend.to_i).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:friends), :id => @friend.to_i).and_return(@response)
     @twitter.graph(:friends, @friend)
   end
   
   it "should create expected HTTP GET request for :followers case using integer user ID" do
     # the integer user ID scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:followers), :id => @id).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:followers), :id => @id).and_return(@response)
     @twitter.graph(:followers, @id)
   end
 
   it "should create expected HTTP GET request for :followers case using screen name" do
     # the screen name scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:followers), :id => @screen_name).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:followers), :id => @screen_name).and_return(@response)
     @twitter.graph(:followers, @screen_name)
   end
 
   it "should create expected HTTP GET request for :followers case using Twitter::User object" do
     # the Twitter::User object scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:followers), :id => @friend.to_i).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:followers), :id => @friend.to_i).and_return(@response)
     @twitter.graph(:followers, @friend)
   end
   

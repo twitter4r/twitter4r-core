@@ -37,15 +37,15 @@ class Twitter::Client
     response = nil
     case action
     when :get
-    	response = http_connect {|conn|	create_http_get_request(uri, :id => value.to_i) }
+      response = rest_oauth_connect(:get, uri, :id => value.to_i)
     when :post
-    	response = http_connect({:status => value, :source => @@config.source}.to_http_str) {|conn| create_http_post_request(uri) }
+      response = rest_oauth_connect(:post, uri, :status => value, :source => @@config.source)
     when :delete
-    	response = http_connect {|conn| create_http_delete_request(uri, :id => value.to_i) }
+      response = rest_oauth_connect(:delete, uri, :id => value.to_i)
     when :reply
       return nil if (!value.is_a?(Hash) || !value[:status] || !value[:in_reply_to_status_id])
       params = value.merge(:source => @@config.source)
-      response = http_connect(params.to_http_str) {|conn| create_http_post_request(uri) }
+      response = rest_oauth_connect(:post, uri, params)
     end
     bless_model(Twitter::Status.unmarshal(response.body))
   end

@@ -13,12 +13,7 @@ class Twitter::Client
   #  account_status = client.account_info
   #  puts account_status.remaining_hits
   def account_info(type = :rate_limit_status)
-    connection = create_http_connection
-    connection.start do |connection|
-      response = http_connect do |conn|
-        create_http_get_request(@@ACCOUNT_URIS[type])
-      end
-      bless_models(Twitter::RateLimitStatus.unmarshal(response.body))
-    end
+    response = rest_oauth_connect(:get, @@ACCOUNT_URIS[type])
+    bless_models(Twitter::RateLimitStatus.unmarshal(response.body))
   end
 end

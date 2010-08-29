@@ -38,36 +38,21 @@ describe Twitter::Client, "#profile" do
     Twitter::User.stub!(:unmarshal).and_return(@user)
   end
   
-  it "should invoke #http_connect with expected arguments for :info case" do
-  	@twitter.should_receive(:http_connect).with(@info_attrs.to_http_str).and_return(@response)
+  it "should invoke #rest_oauth_connect with expected arguments for :info case" do
+  	@twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:info], @info_attrs).and_return(@response)
     @twitter.profile(:info, @info_attrs)
   end
 
-  it "should invoke #http_connect with expected arguments for :colors case" do
-  	@twitter.should_receive(:http_connect).with(@colors_attrs.to_http_str).and_return(@response)
+  it "should invoke #rest_oauth_connect with expected arguments for :colors case" do
+  	@twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:colors], @colors_attrs).and_return(@response)
     @twitter.profile(:colors, @colors_attrs)
   end
   
-  it "should invoke #http_connect with expected arguments for :device case" do
-  	@twitter.should_receive(:http_connect).with(@device_attrs.to_http_str).and_return(@response)
-    @twitter.profile(:info, @device_attrs)
-  end
-  
-  it "should create expected HTTP POST request for :info case" do
-    @twitter.should_receive(:create_http_post_request).with(@uris[:info]).and_return(@request)
-    @twitter.profile(:info, @info_attrs)
-  end
-  
-  it "should create expected HTTP POST request for :colors case" do
-    @twitter.should_receive(:create_http_post_request).with(@uris[:colors]).and_return(@request)
-    @twitter.profile(:colors, @colors_attrs)
-  end
-  
-  it "should create expected HTTP POST request for :device case" do
-    @twitter.should_receive(:create_http_post_request).with(@uris[:device]).and_return(@request)
+  it "should invoke #rest_oauth_connect with expected arguments for :device case" do
+  	@twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:device], @device_attrs).and_return(@response)
     @twitter.profile(:device, @device_attrs)
   end
-
+  
   it "should bless returned Twitter::User object for :info case" do
     @twitter.should_receive(:bless_model).with(@user)
     @twitter.profile(:info, @info_attrs)
@@ -82,8 +67,6 @@ describe Twitter::Client, "#profile" do
     @twitter.should_receive(:bless_model).with(@user)
     @twitter.profile(:device, @device_attrs)
   end
-  
-  it "should raise an ArgumentError when giving an invalid profile action"
   
   after(:each) do
     nilize(@twitter, @uris, @request, @response, @connection, @sender, @recipient, @user, @attributes)

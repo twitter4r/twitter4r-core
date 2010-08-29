@@ -16,7 +16,7 @@ class Twitter::Client
   def favorites(options = nil)
     def uri_suffix(opts); opts && opts[:page] ? "?page=#{opts[:page]}" : ""; end
     uri = '/favorites.json' + uri_suffix(options)
-    response = http_connect {|conn|	create_http_get_request(uri) }
+    response = rest_oauth_connect(:get, uri)
     bless_models(Twitter::Status.unmarshal(response.body))
   end
 	
@@ -44,9 +44,9 @@ class Twitter::Client
     uri = "#{@@FAVORITES_URIS[action]}/#{value}.json"
     case action
     when :add
-      response = http_connect {|conn| create_http_post_request(uri) }
+      response = rest_oauth_connect(:post, uri)
     when :remove
-      response = http_connect {|conn| create_http_delete_request(uri) }
+      response = rest_oauth_connect(:delete, uri)
     end
     bless_model(Twitter::Status.unmarshal(response.body))
   end

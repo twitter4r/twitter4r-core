@@ -15,12 +15,12 @@ describe Twitter::Client, "#favorites" do
   end
   
   it "should create expected HTTP GET request when not giving options" do
-    @twitter.should_receive(:create_http_get_request).with(@uri).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri).and_return(@response)
     @twitter.favorites
   end
   
   it "should create expected HTTP GET request when giving :page options" do
-    @twitter.should_receive(:create_http_get_request).with("#{@uri}?#{@options.to_http_str}").and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uri}?#{@options.to_http_str}").and_return(@response)
     @twitter.favorites(@options)
   end
   
@@ -141,12 +141,12 @@ describe Twitter::Client, "#favorite(:add, status)" do
   end
   
   it "should create expected POST request for :add action supplying integer id of status" do
-    @twitter.should_receive(:create_http_post_request).with(create_uri(:create, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:create, @id)).and_return(@request)
     @twitter.favorite(:add, @id)
   end
   
   it "should create expected POST request for :add action supplying status object" do
-    @twitter.should_receive(:create_http_post_request).with(create_uri(:create, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:post, create_uri(:create, @id)).and_return(@request)
     @twitter.favorite(:add, @status)
   end
   
@@ -168,12 +168,12 @@ describe Twitter::Client, "#favorite(:remove, status)" do
   end
   
   it "should create expected DELETE request for :remove action supplying integer id of status" do
-    @twitter.should_receive(:create_http_delete_request).with(create_uri(:destroy, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, create_uri(:destroy, @id)).and_return(@request)
     @twitter.favorite(:remove, @id)
   end
   
   it "should create expected DELETE request for :remove action supplying status object" do
-    @twitter.should_receive(:create_http_delete_request).with(create_uri(:destroy, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, create_uri(:destroy, @id)).and_return(@request)
     @twitter.favorite(:remove, @status)
   end
   

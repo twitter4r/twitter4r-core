@@ -90,38 +90,31 @@ end
 # stubs out the <tt>request</tt> method to return the given 
 # <tt>response</tt>
 def mas_net_http(response, obj_stubs = {})
-  http = mock(Net::HTTP, obj_stubs)
-  Net::HTTP.stub!(:new).and_return(http)
-  http.stub!(:request).and_return(response)
-  http.stub!(:start).and_yield(http)
-  http.stub!(:use_ssl=)
-  http.stub!(:verify_mode=)
-  http.stub!(:read_timeout=)
-  http
+  access_token = mock(OAuth::AccessToken, obj_stubs)
+  OAuth::AccessToken.stub!(:new).and_return(access_token)
+  access_token.stub!(:request).and_return(response)
+  obj_stubs.each do |method, value|
+    access_token.stub!(method).and_return(value)
+  end
+  [:get, :post, :put, :delete].each do |method|
+    access_token.stub!(method).and_return(response)
+  end
+  access_token.stub!(:body).and_return("")
+  access_token
 end
 
 # Spec helper that returns a mocked <tt>Net::HTTP::Get</tt> object and 
 # stubs relevant class methods and given <tt>obj_stubs</tt> 
 # for endo-specing
 def mas_net_http_get(obj_stubs = {})
-  request = Spec::Mocks::Mock.new(Net::HTTP::Get)
-  Net::HTTP::Get.stub!(:new).and_return(request)
-  obj_stubs.each do |method, value|
-    request.stub!(method).and_return(value)
-  end
-  request
+  mas_net_http(nil, obj_stubs)
 end
 
 # Spec helper that returns a mocked <tt>Net::HTTP::Post</tt> object and 
 # stubs relevant class methods and given <tt>obj_stubs</tt> 
 # for endo-specing
 def mas_net_http_post(obj_stubs = {})
-  request = Spec::Mocks::Mock.new(Net::HTTP::Post)
-  Net::HTTP::Post.stub!(:new).and_return(request)
-  obj_stubs.each do |method, value|
-    request.stub!(method).and_return(value)
-  end
-  request
+  mas_net_http(nil, obj_stubs)
 end
 
 # Spec helper that returns a mocked <tt>Net::HTTPResponse</tt> object and 

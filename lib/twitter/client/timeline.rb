@@ -65,7 +65,7 @@ class Twitter::Client
   def timeline_for(type, options = {}, &block)
     raise ArgumentError, "Invalid timeline type: #{type}" unless @@TIMELINE_URIS.keys.member?(type)
     uri = @@TIMELINE_URIS[type]
-    response = http_connect {|conn| create_http_get_request(uri, options) }
+    response = rest_oauth_connect(:get, uri, options)
     timeline = Twitter::Status.unmarshal(response.body)
     timeline.each {|status| bless_model(status); yield status if block_given? }
     timeline

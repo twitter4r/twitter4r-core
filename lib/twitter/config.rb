@@ -7,6 +7,11 @@ module Twitter
   # * <tt>protocol</tt> - <tt>:http</tt>, <tt>:https</tt> or <tt>:ssl</tt> supported.  <tt>:ssl</tt> is an alias for <tt>:https</tt>.  Defaults to <tt>:ssl</tt>
   # * <tt>host</tt> - hostname to connect to for the Twitter service.  Defaults to <tt>'twitter.com'</tt>.
   # * <tt>port</tt> - port to connect to for the Twitter service.  Defaults to <tt>443</tt>.
+  # * <tt>path_prefix</tt> - path to prefix URIs of REST API calls.  Defaults to <tt>""</tt>.
+  # * <tt>search_protocol</tt> - <tt>:http</tt>, <tt>:https</tt> or <tt>:ssl</tt> supported.  <tt>:ssl</tt> is an alias for <tt>:https</tt>.  Defaults to <tt>:ssl</tt>
+  # * <tt>search_host</tt> - hostname to connect to for the Twitter Search service.  Defaults to <tt>'twitter.com'</tt>.
+  # * <tt>search_port</tt> - port to connect to for the Twitter Search service.  Defaults to <tt>443</tt>.
+  # * <tt>search_path_prefix</tt> - path to prefix URIs of Search API calls.  Defaults to <tt>""</tt>.
   # * <tt>proxy_host</tt> - proxy host to use.  Defaults to nil.
   # * <tt>proxy_port</tt> - proxy host to use.  Defaults to nil.
   # * <tt>proxy_user</tt> - proxy username to use.  Defaults to nil.
@@ -28,9 +33,11 @@ module Twitter
       :protocol, 
       :host, 
       :port, 
+      :path_prefix,
       :search_protocol,
       :search_host,
       :search_port,
+      :search_path_prefix,
       :proxy_host, 
       :proxy_port, 
       :proxy_user, 
@@ -48,7 +55,7 @@ module Twitter
       :oauth_authorize_path,
     ]
 
-    attr_accessor *@@ATTRIBUTES
+    attr_accessor(*@@ATTRIBUTES)
     
     # Override of Object#eql? to ensure RSpec specifications run 
     # correctly. Also done to follow Ruby best practices.
@@ -65,9 +72,11 @@ module Twitter
     @@defaults = { :host => 'twitter.com', 
                    :port => 443, 
                    :protocol => :ssl,
+                   :path_prefix => "",
                    :search_host => 'search.twitter.com',
                    :search_port => 80,
                    :search_protocol => :http,
+                   :search_path_prefix => "",
                    :proxy_host => nil,
                    :proxy_port => nil,
                    :user_agent => "default",

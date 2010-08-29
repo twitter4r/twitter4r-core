@@ -10,25 +10,25 @@ describe Twitter::Client, "#authenticate?" do
     @error_response = mas_net_http_response(404, "Resource Not Found")
     @connection = mas_net_http(@response)
     Net::HTTP.stub!(:new).and_return(@connection)
-    @login = "applestillsucks"
-    @password = "linuxstillrocks"
+    @access_key = "applestillsucks"
+    @access_secret = "linuxstillrocks"
   end
   
   it "creates expected HTTP GET request" do
-    @twitter.should_receive(:create_http_get_request).with(@uri).and_return(@request)
-    @twitter.authenticate?(@login, @password)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri).and_return(@request)
+    @twitter.authenticate?(@access_key, @access_secret)
   end
   
   it "should return true if HTTP response is 20X" do
-    @twitter.authenticate?(@login, @password).should be(true)
+    @twitter.authenticate?(@access_key, @access_secret).should be(true)
   end
   
   it "should return false if HTTP response is not 20X" do
-    Net::HTTP.stub!(:new).and_return(mas_net_http(@error_response))
-    @twitter.authenticate?(@login, @password).should be(false)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri).and_return(@error_response)
+    @twitter.authenticate?(@access_key, @access_secret).should be(false)
   end
   
   after(:each) do
-    nilize(@uri, @request, @twitter, @default_header, @response, @error_response, @connection, @login, @password)
+    nilize(@uri, @request, @twitter, @default_header, @response, @error_response, @connection, @access_key, @access_secret)
   end
 end

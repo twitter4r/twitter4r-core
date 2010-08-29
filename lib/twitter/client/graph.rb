@@ -31,7 +31,7 @@ class Twitter::Client
     id ||= value
     id ||= @login
     uri = "#{@@GRAPH_URIS[action]}.json"
-    response = http_connect {|conn| create_http_get_request(uri, :id => id) }
+    response = rest_oauth_connect(:get, uri, :id => id)
     JSON.parse(response.body)
   end
 end

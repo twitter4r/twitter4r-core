@@ -18,12 +18,7 @@ class Twitter::Client
   #  user = client.profile(:info, :location => "University Library")
   #  puts user.inspect
   def profile(action, attributes)
-    connection = create_http_connection
-    connection.start do |connection|
-      response = http_connect(attributes.to_http_str) do |conn|
-        create_http_post_request(@@PROFILE_URIS[action])
-      end
-      bless_models(Twitter::User.unmarshal(response.body))
-    end
+    response = rest_oauth_connect(:post, @@PROFILE_URIS[action], attributes)
+    bless_models(Twitter::User.unmarshal(response.body))
   end
 end

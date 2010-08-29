@@ -17,7 +17,7 @@ describe Twitter::Client, "#search" do
   end
   
   it "should create expected HTTP GET request using :to" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:basic], {:to => @to}).and_return(@request)
+    @twitter.should_receive(:search_oauth_connect).with(:get, @uris[:basic], {:to => @to}).and_return(@response)
     @twitter.search(:to => @to)
   end
   
@@ -27,7 +27,7 @@ describe Twitter::Client, "#search" do
   end
   
   it "should create expected HTTP GET request using :from" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:basic], {:from => @from}).and_return(@request)
+    @twitter.should_receive(:search_oauth_connect).with(:get, @uris[:basic], {:from => @from}).and_return(@response)
     @twitter.search(:from => @from)
   end
   
@@ -37,7 +37,7 @@ describe Twitter::Client, "#search" do
   end
   
   it "should create expected HTTP GET request using :keywords" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:basic], {:keywords => @keywords}).and_return(@request)
+    @twitter.should_receive(:search_oauth_connect).with(:get, @uris[:basic], {:keywords => @keywords}).and_return(@response)
     @twitter.search(:keywords => @keywords)
   end
   
@@ -53,7 +53,7 @@ describe Twitter::Client, "#search" do
   end
 
   it "should generate expected GET HTTP request for paging case" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:basic], {:page => @page}).and_return(@request)
+    @twitter.should_receive(:search_oauth_connect).with(:get, @uris[:basic], {:page => @page}).and_return(@response)
     @twitter.search(:page => @page)
   end
 

@@ -11,22 +11,20 @@ describe Twitter::Client, "#user(id, :info)" do
     	:location => 'London'
     )
     @json = JSON.unparse(@user.to_hash)
-    @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, @json)
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
-    @twitter.stub!(:create_http_get_request).and_return(@request)
     Twitter::User.stub!(:unmarshal).and_return(@user)
     Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:info], {:user_id => @id}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], {:user_id => @id}).and_return(@response)
     @twitter.user(@id)
   end
     
   it "should create expected HTTP GET request when giving screen name" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:info], {:screen_name => @screen_name}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], {:screen_name => @screen_name}).and_return(@response)
     @twitter.user(@screen_name)
   end
   
@@ -41,7 +39,7 @@ describe Twitter::Client, "#user(id, :info)" do
   end
 
   after(:each) do
-    nilize(@request, @response, @connection, @twitter, @id, @screen_name, @user)
+    nilize(@response, @connection, @twitter, @id, @screen_name, @user)
   end
 end
 
@@ -58,17 +56,15 @@ describe Twitter::Client, "#user(id, :friends)" do
       :location => 'Urbana, IL'
     )
     @json = JSON.unparse(@user.to_hash)
-    @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, @json)
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
-    @twitter.stub!(:create_http_get_request).and_return(@request)
     Twitter::User.stub!(:unmarshal).and_return(@user)
     Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:friends], {:user_id => @id}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:user_id => @id}).and_return(@response)
     @twitter.user(@id, :friends)
   end
   
@@ -78,12 +74,12 @@ describe Twitter::Client, "#user(id, :friends)" do
   end
   
   it "should create expected HTTP GET request when giving Twitter::User object" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:friends], {:user_id => @user.to_i}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:user_id => @user.to_i}).and_return(@response)
     @twitter.user(@user, :friends)
   end
   
   it "should create expected HTTP GET request when giving screen name" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:friends], {:screen_name => @screen_name}).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:screen_name => @screen_name}).and_return(@response)
     @twitter.user(@screen_name, :friends)
   end
   
@@ -103,7 +99,7 @@ describe Twitter::Client, "#user(id, :friends)" do
   end
   
   after(:each) do
-    nilize(@request, @response, @connection, @twitter, @id, @screen_name, @user)
+    nilize(@response, @connection, @twitter, @id, @screen_name, @user)
   end
 end
 
@@ -117,17 +113,16 @@ describe Twitter::Client, "#my(:info)" do
       :location => 'Glamorous Urbana'
     )
     @json = JSON.unparse(@user.to_hash)
-    @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, @json)
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
-    @twitter.stub!(:create_http_get_request).and_return(@request)
+    @twitter.stub!(:rest_oauth_connect).and_return(@response)
     Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@user)
   end
   
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:info], :id => @screen_name).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], :id => @screen_name).and_return(@response)
     @twitter.my(:info)
   end
   
@@ -142,7 +137,7 @@ describe Twitter::Client, "#my(:info)" do
   end
 
   after(:each) do
-    nilize(@request, @response, @connection, @twitter, @user, @screen_name)
+    nilize(@response, @connection, @twitter, @user, @screen_name)
   end
 end
 
@@ -157,17 +152,15 @@ describe Twitter::Client, "#my(:friends)" do
       Twitter::User.new(:screen_name => 'elizabeth_jane_newson'),
     ]
     @json = JSON.unparse(@friends.collect {|f| f.to_hash })
-    @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, @json)
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
-    @twitter.stub!(:create_http_get_request).and_return(@request)
     Twitter::User.stub!(:unmarshal).and_return(@friends)
     Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:friends], :id => @screen_name).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], :id => @screen_name).and_return(@response)
     @twitter.my(:friends)
   end
   
@@ -182,7 +175,7 @@ describe Twitter::Client, "#my(:friends)" do
   end
   
   after(:each) do
-    nilize(@request, @response, @connection, @twitter, @friends, @screen_name)
+    nilize(@response, @connection, @twitter, @friends, @screen_name)
   end
 end
 

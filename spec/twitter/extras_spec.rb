@@ -4,7 +4,6 @@ describe Twitter::Client, "#featured(:users)" do
   before(:each) do
     @twitter = client_context
     @uris = Twitter::Client.class_eval("@@FEATURED_URIS")
-    @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
     Net::HTTP.stub!(:new).and_return(@connection)
@@ -16,7 +15,7 @@ describe Twitter::Client, "#featured(:users)" do
   end
   
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:create_http_get_request).with(@uris[:users]).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:users]).and_return(@response)
     @twitter.featured(:users)
   end
   
@@ -26,7 +25,7 @@ describe Twitter::Client, "#featured(:users)" do
   end
   
   after(:each) do
-    nilize(@twitter, @uris, @request, @response, @connection)
+    nilize(@twitter, @uris, @response, @connection)
   end
 end
 

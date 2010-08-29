@@ -20,37 +20,37 @@ describe Twitter::Client, "#block" do
   
   it "should create expected HTTP GET request for :add case using integer user ID" do
   	# the integer user ID scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:add, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:add, @id)).and_return(@response)
     @twitter.block(:add, @id)
   end
   
   it "should create expected HTTP GET request for :add case using screen name" do
     # the screen name scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:add, @screen_name)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:add, @screen_name)).and_return(@response)
     @twitter.block(:add, @screen_name)
   end
 
   it "should create expected HTTP GET request for :add case using Twitter::User object" do
     # the Twitter::User object scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:add, @friend.to_i)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:add, @friend.to_i)).and_return(@response)
     @twitter.block(:add, @friend)
   end
   
   it "should create expected HTTP GET request for :remove case using integer user ID" do
     # the integer user ID scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:remove, @id)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:remove, @id)).and_return(@response)
     @twitter.block(:remove, @id)
   end
 
   it "should create expected HTTP GET request for :remove case using screen name" do
     # the screen name scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:remove, @screen_name)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:remove, @screen_name)).and_return(@response)
     @twitter.block(:remove, @screen_name)
   end
 
   it "should create expected HTTP GET request for :remove case using Twitter::User object" do
     # the Twitter::User object scenario...
-    @twitter.should_receive(:create_http_get_request).with(create_uri(:remove, @friend.to_i)).and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, create_uri(:remove, @friend.to_i)).and_return(@response)
     @twitter.block(:remove, @friend)
   end
   
