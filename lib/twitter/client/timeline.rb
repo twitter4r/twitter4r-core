@@ -40,7 +40,8 @@ class Twitter::Client
   # <tt>options</tt> can also include the following keys:
   # * <tt>:id</tt> is the user ID, screen name of Twitter::User representation of a <tt>Twitter</tt> user.
   # * <tt>:since</tt> is a Time object specifying the date-time from which to return results for.  Applicable for the :friend, :friends, :user and :me cases.
-  # * <tt>:count</tt> specifies the number of statuses to retrieve.  Only applicable for the :user case.
+  # * <tt>:per_page</tt> specifies the number of statuses to retrieve at a time.  Only applicable for the :user case.
+  # * <tt>:page</tt> specifies page number to retrieve.
   # * <tt>since_id</tt> is the status id of the public timeline from which to retrieve statuses for <tt>:public</tt>.  Only applicable for the :public case.
   # 
   # You can also pass this method a block, which will iterate through the results

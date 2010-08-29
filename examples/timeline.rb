@@ -57,7 +57,7 @@
 #  new_friends_timeline = twitter.timeline_for(:friends, :since => yesterday)
 # 
 # Returns last three statuses from user <tt>'twitter4r'</tt>:
-#  latest_twitter4r_timeline = twitter.timeline_for(:user, :id => 'twitter4', :count => 3)
+#  latest_twitter4r_timeline = twitter.timeline_for(:user, :id => 'twitter4', :per_page => 3)
 # 
 # Returns timeline from user <tt>'dictionary'</tt> since yesterday at this time, 
 # with block:
