@@ -11,7 +11,6 @@ describe "Twitter::Client" do
       client = Twitter::Client.new(@init_hash)
     end.should_not raise_error
     client.send(:login).should eql(@init_hash[:login])
-    client.send(:password).should eql(@init_hash[:password])
   end  
 end
 
@@ -136,20 +135,5 @@ describe Twitter::Client, "#bless_models" do
   
   after(:each) do
     nilize(@twitter, @models)
-  end
-end
-
-describe Twitter::Client, "#credentials_given?" do
-  before(:each) do
-    @client_with_credentials = Twitter::Client.new(:login => "somelogin", :password => "somepassword")
-    @client_witout_credentials = Twitter::Client.new
-  end
-
-  it "should return true on client object with credentials set" do
-    @client_with_credentials.send(:credentials_given?).should be(true)
-  end
-
-  it "should return false on client object without credentials set" do
-    @client_witout_credentials.send(:credentials_given?).should be(false)
   end
 end

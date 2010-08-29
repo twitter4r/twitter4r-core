@@ -37,7 +37,7 @@ class Twitter::Client
     response = nil
     case action
     when :get
-      response = rest_oauth_connect(:get, uri, :id => value.to_i)
+      response = rest_oauth_connect(:get, "#{uri}?#{{:id => value.to_i}.to_http_str}")
     when :post
       response = rest_oauth_connect(:post, uri, :status => value, :source => @@config.source)
     when :delete

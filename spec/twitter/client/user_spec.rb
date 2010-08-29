@@ -19,12 +19,12 @@ describe Twitter::Client, "#user(id, :info)" do
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], {:user_id => @id}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:info]}?#{{:user_id => @id}.to_http_str}").and_return(@response)
     @twitter.user(@id)
   end
     
   it "should create expected HTTP GET request when giving screen name" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], {:screen_name => @screen_name}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:info]}?#{{:screen_name => @screen_name}.to_http_str}").and_return(@response)
     @twitter.user(@screen_name)
   end
   
@@ -64,7 +64,7 @@ describe Twitter::Client, "#user(id, :friends)" do
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:user_id => @id}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:friends]}?#{{:user_id => @id}.to_http_str}").and_return(@response)
     @twitter.user(@id, :friends)
   end
   
@@ -74,12 +74,12 @@ describe Twitter::Client, "#user(id, :friends)" do
   end
   
   it "should create expected HTTP GET request when giving Twitter::User object" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:user_id => @user.to_i}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:friends]}?#{{:user_id => @user.to_i}.to_http_str}").and_return(@response)
     @twitter.user(@user, :friends)
   end
   
   it "should create expected HTTP GET request when giving screen name" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], {:screen_name => @screen_name}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:friends]}?#{{:screen_name => @screen_name}.to_http_str}").and_return(@response)
     @twitter.user(@screen_name, :friends)
   end
   
@@ -122,7 +122,7 @@ describe Twitter::Client, "#my(:info)" do
   end
   
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:info], :id => @screen_name).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:info]}?#{{:id => @screen_name}.to_http_str}").and_return(@response)
     @twitter.my(:info)
   end
   
@@ -160,7 +160,7 @@ describe Twitter::Client, "#my(:friends)" do
   end
   
   it "should create expected HTTP GET request" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:friends], :id => @screen_name).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:friends]}?#{{:id => @screen_name}.to_http_str}").and_return(@response)
     @twitter.my(:friends)
   end
   

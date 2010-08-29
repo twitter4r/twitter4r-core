@@ -9,12 +9,8 @@ class Twitter::Client
   end
 
   protected
-    attr_accessor :login, :password, :oauth_consumer, :oauth_access
+    attr_accessor :login, :oauth_consumer, :oauth_access
 
-    def credentials_given?
-      !!(@login && @password)
-    end
-    
     # Returns the response of the OAuth/HTTP(s) request for REST API requests (not Search)
     def rest_oauth_connect(method, path, params = {}, headers = {}, require_auth = true)
       atoken = rest_access_token
