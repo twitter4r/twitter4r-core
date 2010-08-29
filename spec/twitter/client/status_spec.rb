@@ -70,23 +70,18 @@ describe Twitter::Client, "#status" do
     status.should be_nil
   end
   
-  it "should not call @twitter#http_connect when passing nil for value argument in :delete case" do
-    @twitter.should_not_receive(:http_connect)
-    @twitter.status(:delete, nil)
-  end
-  
   it "should create expected HTTP DELETE request for :delete case" do
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], @options).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{@options.to_http_str}").and_return(@response)
     @twitter.status(:delete, @options[:id])
   end
 
   it "should invoke @twitter#rest_oauth_connect with given parameters equivalent to {:id => value.to_i} for :delete case" do
     # Float case
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], {:id => @float.to_i}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{{:id => @float.to_i}.to_http_str}").and_return(@response)
     @twitter.status(:delete, @float)
 
     # Twitter::Status object case
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], {:id => @status.to_i}).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{{:id => @status.to_i}.to_http_str}").and_return(@response)
     @twitter.status(:delete, @status)
   end
   
