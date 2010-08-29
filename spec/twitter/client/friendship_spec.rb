@@ -1,16 +1,35 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 
+describe Twitter::Client, "#friendships" do
+  before(:each) do
+    @twitter = client_context
+    @uris = Twitter::Client.class_eval("@@FRIENDSHIP_URIS")
+    @response = mas_net_http_response(:success)
+    @connection = mas_net_http(@response)
+    @result = { :id_list => { :ids => [] } }
+    JSON.stub!(:parse).and_return(@result)
+  end
+
+  it "should create expected HTTP GET request for :incoming case" do
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:incoming]).and_return(@response)
+    @twitter.friendships(:incoming)
+  end
+
+  it "should create expected HTTP GET request for :outgoing case" do
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:outgoing]).and_return(@response)
+    @twitter.friendships(:outgoing)
+  end
+end
+
 describe Twitter::Client, "#friend" do
   before(:each) do
     @twitter = client_context
     @id = 1234567
     @screen_name = 'dummylogin'
     @friend = Twitter::User.new(:id => @id, :screen_name => @screen_name)
-    @uris = Twitter::Client.class_eval("@@FRIENDSHIP_URIS")
-    @request = mas_net_http_post(:basic_auth => nil)
+    @uris = Twitter::Client.class_eval("@@FRIEND_URIS")
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@friend)
   end
   
@@ -71,6 +90,6 @@ describe Twitter::Client, "#friend" do
   end
   
   after(:each) do
-    nilize(@twitter, @id, @uris, @request, @response, @connection)
+    nilize(@twitter, @id, @uris, @response, @connection)
   end
 end
