@@ -64,7 +64,7 @@ expect posted_status, status, 'Did not get proper status'
 
 sleep(5)
 puts "Status deletion sanity check"
-deleted_status = twitter.status(:delete, posted_status.id)
+deleted_status = twitter.status(:delete, posted_status)
 expect posted_status, deleted_status, 'Did not delete same status'
 
 sleep(5)
