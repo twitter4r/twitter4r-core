@@ -5,7 +5,7 @@ if RUBY_VERSION < "1.9.0"
 end
 
 group :test do
-  gem "rspec"
+  gem "rspec", "2.0.0.beta.20"
   gem "ZenTest"
   gem "code_statistics"
   gem "rcov"
