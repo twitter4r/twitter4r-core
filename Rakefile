@@ -18,7 +18,7 @@ import('tasks/spec.rake')
 import('tasks/stats.rake')
 import('tasks/web.rake')
 
-task :default => [:coverage]
+task :default => ['spec:console']
 
 namespace :spec do
   task :autotest do

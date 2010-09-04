@@ -137,3 +137,53 @@ describe Twitter::Client, "#bless_models" do
     nilize(@twitter, @models)
   end
 end
+
+shared_examples_for "consumer token overrides" do
+  before(:each) do
+    @config_key = "234ufmewroi23o43SFsf"
+    @config_secret = "kfgIYFOasdfsfg236GSka"
+    @key_override = "#{@config_key}-1234"
+    @secret_override = "#{@config_secret}-1234"
+    Twitter::Client.configure do |conf|
+      conf.oauth_consumer_token = @config_key
+      conf.oauth_consumer_secret = @config_secret
+    end
+    @overridded_client = Twitter::Client.new(:oauth_consumer => { :key => @key_override, :secret => @secret_override })
+    @plain_client = Twitter::Client.new
+  end
+
+  it "should be set to key/secret pair passed into constructor when passed in and configuration object already has key/secret set" do
+    consumer = get_consumer(@overridded_client)
+    consumer.instance_eval("@key").should eql(@key_override)
+    consumer.instance_eval("@secret").should eql(@secret_override)
+  end
+
+  it "should be set to key/secret pair set in configuration object when none passed into constructor" do
+    consumer = get_consumer(@plain_client)
+    consumer.instance_eval("@key").should eql(@config_key)
+    consumer.instance_eval("@secret").should eql(@config_secret)
+  end
+
+  after(:each) do
+    Twitter::Client.configure do |conf|
+      conf.oauth_consumer_token = nil
+      conf.oauth_consumer_secret = nil
+    end
+  end
+end
+
+describe Twitter::Client, "rest consumer token" do
+  it_should_behave_like "consumer token overrides"
+
+  def get_consumer(client)
+    client.send(:rest_consumer)
+  end
+end
+
+describe Twitter::Client, "search consumer token" do
+  it_should_behave_like "consumer token overrides"
+
+  def get_consumer(client)
+    client.send(:search_consumer)
+  end
+end

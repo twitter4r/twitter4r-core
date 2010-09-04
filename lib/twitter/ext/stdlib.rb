@@ -35,18 +35,3 @@ class Time
   end
 end
 
-# Extension to Kernel to add #gem_present? without any exceptions raised
-module Kernel
-
-  # Returns whether or not a gem exists without raising a Gem::LoadError exception
-  def gem_present?(gem_name, version = nil)
-    present = false
-    begin
-      present = !!(version ? gem(gem_name, version) : gem(gem_name))
-    rescue Gem::LoadError => le
-      present = false
-      warn("Gem load error: Couldn't load #{gem_name} #{version ? "with version requirement #{version}: #{le.to_s}": ""}")
-    end
-    present
-  end
-end

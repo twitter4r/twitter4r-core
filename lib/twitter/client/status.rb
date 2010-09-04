@@ -39,12 +39,12 @@ class Twitter::Client
     when :get
       response = rest_oauth_connect(:get, "#{uri}?#{{:id => value.to_i}.to_http_str}")
     when :post
-      response = rest_oauth_connect(:post, uri, :status => value, :source => @@config.source)
+      response = rest_oauth_connect(:post, uri, :status => value, :source => self.class.config.source)
     when :delete
       response = rest_oauth_connect(:delete, "#{uri}?#{{:id => value.to_i}.to_http_str}")
     when :reply
       return nil if (!value.is_a?(Hash) || !value[:status] || !value[:in_reply_to_status_id])
-      params = value.merge(:source => @@config.source)
+      params = value.merge(:source => self.class.config.source)
       response = rest_oauth_connect(:post, uri, params)
     end
     bless_model(Twitter::Status.unmarshal(response.body))

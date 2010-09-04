@@ -93,10 +93,15 @@ module Twitter
 
     # Twitter::Client class methods
     class << self
+      # returns configuration object
+      def config
+        @@config
+      end
+
       # Yields to given <tt>block</tt> to configure the Twitter4R API.
       def configure(&block)
         raise ArgumentError, "Block must be provided to configure" unless block_given?
-        yield @@config
+        yield config
       end # configure
     end # class << self    
   end # Client class

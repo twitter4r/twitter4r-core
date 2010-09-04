@@ -68,7 +68,7 @@ class Twitter::Client
     user = user.to_i if user and user.is_a?(Twitter::User)
     case action
     when :post
-      response = rest_oauth_connect(:post, uri, {:text => value, :user => user, :source => @@config.source})
+      response = rest_oauth_connect(:post, uri, {:text => value, :user => user, :source => self.class.config.source})
     when :delete
       response = rest_oauth_connect(:delete, "#{uri}/#{value.to_i}")
     end

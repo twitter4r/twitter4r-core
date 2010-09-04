@@ -49,39 +49,52 @@ class Twitter::Client
     @@http_header = nil
 
     def rest_consumer
-      unless @consumer
-        @consumer = OAuth::Consumer.new(@oauth_consumer["key"], 
-                                        @oauth_consumer["secret"], 
-                                        :site => construct_site_url)
+      unless @rest_consumer
+        consumer = @oauth_consumer
+        if consumer
+          key = consumer[:key] || consumer["key"]
+          secret = consumer[:secret] || consumer["secret"]
+        end
+        cfg = self.class.config
+        key ||= cfg.oauth_consumer_token
+        secret ||= cfg.oauth_consumer_secret
+        @rest_consumer = OAuth::Consumer.new(key, secret, :site => construct_site_url)
       end
-      @consumer
+      @rest_consumer
     end
 
     def rest_access_token
-      unless @access_token
-        @access_token = OAuth::AccessToken.new(rest_consumer, 
-                                               @oauth_access["key"], 
-                                               @oauth_access["secret"])
+      unless @rest_access_token
+        key = @oauth_access[:key] || @oauth_access["key"]
+        secret = @oauth_access[:secret] || @oauth_access["secret"]
+        @rest_access_token = OAuth::AccessToken.new(rest_consumer, key, secret)
       end
-      @access_token
+      @rest_access_token
     end
     
     def search_consumer
-      unless @consumer
-        @consumer = OAuth::Consumer.new(@oauth_consumer["key"], 
-                                        @oauth_consumer["secret"], 
-                                        :site => construct_site_url(:search))
+      unless @search_consumer
+        cfg = self.class.config
+        consumer = @oauth_consumer
+        if consumer
+          key = consumer[:key] || consumer["key"] 
+          secret = consumer[:secret] || consumer["secret"]
+        end
+        cfg = self.class.config
+        key ||= cfg.oauth_consumer_token
+        secret ||= cfg.oauth_consumer_secret
+        @search_consumer = OAuth::Consumer.new(key, secret, :site => construct_site_url(:search))
       end
-      @consumer
+      @search_consumer
     end
 
     def search_access_token
-      unless @access_token
-        @access_token = OAuth::AccessToken.new(search_consumer, 
-                                               @oauth_access["key"], 
-                                               @oauth_access["secret"])
+      unless @search_access_token
+        key = @oauth_access[:key] || @oauth_access["key"]
+        secret = @oauth_access[:secret] || @oauth_access["secret"]
+        @search_access_token = OAuth::AccessToken.new(search_consumer, key, secret)
       end
-      @access_token
+      @search_access_token
     end
 
     def raise_rest_error(response, uri = nil)
@@ -103,31 +116,31 @@ class Twitter::Client
       # create the contents of the HTTP header are determined by other 
       # class variables that are not designed to change after instantiation.
       @@http_header ||= { 
-      	'User-Agent' => "Twitter4R v#{Twitter::Version.to_version} [#{@@config.user_agent}]",
+      	'User-Agent' => "Twitter4R v#{Twitter::Version.to_version} [#{self.class.config.user_agent}]",
       	'Accept' => 'text/x-json',
-      	'X-Twitter-Client' => @@config.application_name,
-      	'X-Twitter-Client-Version' => @@config.application_version,
-      	'X-Twitter-Client-URL' => @@config.application_url,
+      	'X-Twitter-Client' => self.class.config.application_name,
+      	'X-Twitter-Client-Version' => self.class.config.application_version,
+      	'X-Twitter-Client-URL' => self.class.config.application_url,
       }
       @@http_header
     end
 
     def rest_request_uri(path)
-      "#{@@config.path_prefix}#{path}"
+      "#{self.class.config.path_prefix}#{path}"
     end
     
     def search_request_uri(path)
-      "#{@@config.search_path_prefix}#{path}"
+      "#{self.class.config.search_path_prefix}#{path}"
     end
     
     def uri_components(service = :rest)
       case service
       when :rest
-        return @@config.protocol, @@config.host, @@config.port, 
-          @@config.path_prefix
+        return self.class.config.protocol, self.class.config.host, self.class.config.port, 
+          self.class.config.path_prefix
       when :search
-        return @@config.search_protocol, @@config.search_host, 
-          @@config.search_port, @@config.search_path_prefix
+        return self.class.config.search_protocol, self.class.config.search_host, 
+          self.class.config.search_port, self.class.config.search_path_prefix
       end
     end
 

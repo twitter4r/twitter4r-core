@@ -1,36 +1,28 @@
-gem 'rspec', '>=1.0.0'
-require('spec')
-require('spec/rake/spectask')
-require('spec/rake/verify_rcov')
+gem 'rspec'
+require('rspec')
+require('rspec/core/rake_task')
 #require('rcov_report')
 
 gem 'ZenTest'
 require('autotest')
-require('autotest/rspec')
-
-meta = Twitter::Meta.new(File.join(File.dirname(__FILE__), '..'))
+require('autotest/rspec2')
 
 namespace :spec do
   desc "Run specs"
-  Spec::Rake::SpecTask.new(:html) do |t|
-    t.spec_files = meta.spec_files
+  RSpec::Core::RakeTask.new(:html) do |t|
+    t.pattern = 'spec/**/*_spec.rb'
     t.spec_opts = ['--format', 'html:doc/spec/index.html', '--color']
-  #  t.out = 'doc/spec/index.html'
     t.rcov = true
-    t.rcov_opts = ['--html', '--exclude', "#{ENV['HOME']}/.autotest,spec,/usr/lib/ruby,#{ENV['HOME']}/.rvm"]
-    t.rcov_dir = 'doc/rcov'
+    t.rcov_opts = ['--options', "spec/spec.opts"]
     t.fail_on_error = true
   end
 
   desc "Run specs and output to console"
-  Spec::Rake::SpecTask.new(:console) do |t|
-    t.spec_files = meta.spec_files
-    t.spec_opts = ['--color']
+  RSpec::Core::RakeTask.new(:console) do |t|
+    t.pattern = 'spec/**/*_spec.rb'
+    #t.spec_opts = ['--color']
+    t.rcov = true
+    t.rcov_opts = IO.readlines("#{ENV['PWD']}/spec/rcov.opts").map { |line| line.chomp.split(' ') }.flatten
+    t.fail_on_error = true
   end
-end
-
-desc "Run specs with coverage verification"
-RCov::VerifyTask.new(:coverage => ["spec:console", "spec:html"]) do |t|
-  t.threshold = 100
-  t.index_html = 'doc/rcov/index.html'
 end

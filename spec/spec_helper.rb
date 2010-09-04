@@ -1,6 +1,6 @@
 $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
-require 'spec'
+require 'rspec'
 
 def require_project_file(file)
   require(File.join(File.dirname(__FILE__), '..', 'lib', file))  
@@ -34,13 +34,8 @@ end
 # with stubbed attributes and <tt>attrs</tt> for overriding attribute 
 # values.
 def stubbed_twitter_config(config, attrs = {})
-  opts = { 
-    :protocol => :ssl,
-    :host => 'twitter.com',
-    :port => 443,
-    :proxy_host => 'proxy.host',
-    :proxy_port => 8080,
-  }.merge(attrs)
+  defaults = Twitter::Client.class_eval("@@defaults")
+  opts =  defaults.merge(attrs)
   opts.keys.each do |key|
     config.stub!(key).and_return(opts[key])
   end
@@ -49,7 +44,7 @@ end
 
 def mas_twitter_config(attrs = {})
   config = mock(Twitter::Config)
-  stubbed_twitter_conf(config, attrs)
+  stubbed_twitter_config(config, attrs)
 end
 
 def stubbed_twitter_status(status, attrs = {})
@@ -123,7 +118,7 @@ end
 def mas_net_http_response(status = :success, 
                           body = '{}', 
                           obj_stubs = {})
-  response = Spec::Mocks::Mock.new(Net::HTTPResponse)
+  response = RSpec::Mocks::Mock.new(Net::HTTPResponse)
   response.stub!(:body).and_return(body)
   case status
   when :success || 200

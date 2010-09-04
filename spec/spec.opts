@@ -1,6 +1,2 @@
 --colour
---format
-progress
---loadby
-mtime
---reverse
+--format progress

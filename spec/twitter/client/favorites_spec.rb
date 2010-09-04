@@ -98,34 +98,34 @@ module FavoriteSpecMixin
   end
 end
 
-describe "Twitter::Client#favorite error handling", :shared => true do
+shared_examples_for "Twitter::Client#favorite error handling" do
   it "should raise a Twitter::RESTError exception when a 401 HTTP response is received" do
     connection = mas_net_http(mas_net_http_response(:not_authorized))
     lambda {
       execute_method
     }.should raise_error(Twitter::RESTError)
-  end  
+  end
 
   it "should raise a Twitter::RESTError exception when a 403 HTTP response is received" do
     connection = mas_net_http(mas_net_http_response(:forbidden))
     lambda {
       execute_method
     }.should raise_error(Twitter::RESTError)
-  end  
+  end
 
   it "should raise a Twitter::RESTError exception when a 404 HTTP response is received" do
     connection = mas_net_http(mas_net_http_response(:file_not_found))
     lambda {
       execute_method
     }.should raise_error(Twitter::RESTError)
-  end  
+  end
 
   it "should raise a Twitter::RESTError exception when a 500 HTTP response is received" do
     connection = mas_net_http(mas_net_http_response(:server_error))
     lambda {
       execute_method
     }.should raise_error(Twitter::RESTError)
-  end  
+  end
 end
 
 describe Twitter::Client, "#favorite(:add, status)" do
@@ -169,7 +169,7 @@ describe Twitter::Client, "#favorite(:remove, status)" do
   
   it "should create expected DELETE request for :remove action supplying integer id of status" do
     @twitter.should_receive(:rest_oauth_connect).with(:delete, create_uri(:destroy, @id)).and_return(@request)
-    @twitter.favorite(:remove, @id)
+    execute_method
   end
   
   it "should create expected DELETE request for :remove action supplying status object" do
