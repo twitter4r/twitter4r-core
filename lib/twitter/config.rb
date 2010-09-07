@@ -12,8 +12,9 @@ module Twitter
   # * <tt>search_host</tt> - hostname to connect to for the Twitter Search service.  Defaults to <tt>'twitter.com'</tt>.
   # * <tt>search_port</tt> - port to connect to for the Twitter Search service.  Defaults to <tt>443</tt>.
   # * <tt>search_path_prefix</tt> - path to prefix URIs of Search API calls.  Defaults to <tt>""</tt>.
+  # * <tt>proxy_protocol</tt> - proxy protocol to use.  Defaults to http.
   # * <tt>proxy_host</tt> - proxy host to use.  Defaults to nil.
-  # * <tt>proxy_port</tt> - proxy host to use.  Defaults to nil.
+  # * <tt>proxy_port</tt> - proxy host to use.  Defaults to 8080.
   # * <tt>proxy_user</tt> - proxy username to use.  Defaults to nil.
   # * <tt>proxy_pass</tt> - proxy password to use.  Defaults to nil.
   # * <tt>user_agent</tt> - user agent string to use for each request of the HTTP header.
@@ -38,6 +39,7 @@ module Twitter
       :search_host,
       :search_port,
       :search_path_prefix,
+      :proxy_protocol,
       :proxy_host, 
       :proxy_port, 
       :proxy_user, 
@@ -77,8 +79,9 @@ module Twitter
                    :search_port => 80,
                    :search_protocol => :http,
                    :search_path_prefix => "",
+                   :proxy_protocol => "http",
                    :proxy_host => nil,
-                   :proxy_port => nil,
+                   :proxy_port => 8080,
                    :user_agent => "default",
                    :application_name => 'Twitter4R',
                    :application_version => Twitter::Version.to_version,

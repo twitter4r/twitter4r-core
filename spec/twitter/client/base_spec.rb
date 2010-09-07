@@ -187,3 +187,53 @@ describe Twitter::Client, "search consumer token" do
     client.send(:search_consumer)
   end
 end
+
+describe Twitter::Client, "#construct_proxy_url" do
+  before(:each) do
+    @host = "localhost"
+    @port = "8080"
+    @user = "user"
+    @pass = "pass123"
+    @client = client_context
+  end
+
+  def configure_host_and_port
+    Twitter::Client.configure do |conf|
+      conf.proxy_host = @host
+      conf.proxy_port = @port
+    end
+  end
+
+  def configure_user_and_password
+    Twitter::Client.configure do |conf|
+      conf.proxy_user = @user
+      conf.proxy_pass = @pass
+    end
+  end
+
+  it "should return the full proxy URL when proxy host and port given" do
+    configure_host_and_port
+    url = "http://#{@host}:#{@port}"
+    @client.send(:construct_proxy_url).should eql(url)
+  end
+
+  it "should return the full proxy URL when proxy host, port, username and password given" do
+    configure_host_and_port
+    configure_user_and_password
+    url = "http://#{@user}:#{@pass}@#{@host}:#{@port}"
+    @client.send(:construct_proxy_url).should eql(url)
+  end
+
+  it "should return nil when no proxy host is given" do
+    @client.send(:construct_proxy_url).should eql(nil)
+  end
+
+  after(:each) do
+    Twitter::Client.configure do |conf|
+      conf.proxy_user = nil
+      conf.proxy_pass = nil
+      conf.proxy_host = nil
+      conf.proxy_port = nil
+    end
+  end
+end

@@ -58,7 +58,9 @@ class Twitter::Client
         cfg = self.class.config
         key ||= cfg.oauth_consumer_token
         secret ||= cfg.oauth_consumer_secret
-        @rest_consumer = OAuth::Consumer.new(key, secret, :site => construct_site_url)
+        @rest_consumer = OAuth::Consumer.new(key, secret, 
+                                             :site => construct_site_url,
+                                             :proxy => construct_proxy_url)
       end
       @rest_consumer
     end
@@ -83,7 +85,9 @@ class Twitter::Client
         cfg = self.class.config
         key ||= cfg.oauth_consumer_token
         secret ||= cfg.oauth_consumer_secret
-        @search_consumer = OAuth::Consumer.new(key, secret, :site => construct_site_url(:search))
+        @search_consumer = OAuth::Consumer.new(key, secret, 
+                                               :site => construct_site_url(:search),
+                                               :proxy => construct_proxy_url)
       end
       @search_consumer
     end
@@ -146,6 +150,23 @@ class Twitter::Client
 
     def construct_site_url(service = :rest)
       protocol, host, port, path_prefix = uri_components(service)
-      "#{protocol == :ssl ? :https : protocol}://#{host}:#{port}"
+      "#{(protocol == :ssl ? :https : protocol).to_s}://#{host}:#{port}"
+    end
+
+    def construct_proxy_url
+      cfg = self.class.config
+      proxy_user, proxy_pass = cfg.proxy_user, cfg.proxy_pass
+      proxy_host, proxy_port = cfg.proxy_host, cfg.proxy_port
+      protocol = ((cfg.proxy_protocol == :ssl) ? :https : cfg.proxy_protocol).to_s
+      url = nil
+      if proxy_host
+        url = "#{protocol}://"
+        if proxy_user
+          url << "#{proxy_user}:#{proxy_pass}@"
+        end
+        url << "#{proxy_host}:#{proxy_port.to_s}"
+      else
+        url
+      end
     end
 end
