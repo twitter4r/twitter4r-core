@@ -14,9 +14,8 @@ class Twitter::Client
   #  statuses = client.favorites(:page => 2)
   # The above one-liner will get the second page of favorites for the authenticated user.
   def favorites(options = nil)
-    def uri_suffix(opts); opts && opts[:page] ? "?page=#{opts[:page]}" : ""; end
-    uri = '/favorites.json' + uri_suffix(options)
-    response = rest_oauth_connect(:get, uri)
+    uri = '/favorites.json'
+    response = rest_oauth_connect(:get, uri, options)
     bless_models(Twitter::Status.unmarshal(response.body))
   end
 	

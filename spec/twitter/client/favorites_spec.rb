@@ -15,12 +15,12 @@ describe Twitter::Client, "#favorites" do
   end
   
   it "should create expected HTTP GET request when not giving options" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri).and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri, nil).and_return(@response)
     @twitter.favorites
   end
   
   it "should create expected HTTP GET request when giving :page options" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uri}?#{@options.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uri, @options).and_return(@response)
     @twitter.favorites(@options)
   end
   

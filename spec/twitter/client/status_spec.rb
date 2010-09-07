@@ -26,17 +26,17 @@ describe Twitter::Client, "#status" do
   end
   
   it "should create expected HTTP GET request for :get case" do
-    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:get]}?#{@options.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:get], @options).and_return(@response)
     @twitter.status(:get, @options[:id])
   end
   
   it "should invoke @twitter#rest_oauth_connect with given parameters equivalent to {:id => value.to_i} for :get case" do
     # Float case
-    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:get]}?#{{:id => @float.to_i}.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:get], {:id => @float.to_i}).and_return(@response)
     @twitter.status(:get, @float)
 
     # Twitter::Status object case
-    @twitter.should_receive(:rest_oauth_connect).with(:get, "#{@uris[:get]}?#{{:id => @status.to_i}.to_http_str}").and_return(@response)    
+    @twitter.should_receive(:rest_oauth_connect).with(:get, @uris[:get], {:id => @status.to_i}).and_return(@response)    
     @twitter.status(:get, @status)
   end
   
@@ -71,17 +71,17 @@ describe Twitter::Client, "#status" do
   end
   
   it "should create expected HTTP DELETE request for :delete case" do
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{@options.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], @options).and_return(@response)
     @twitter.status(:delete, @options[:id])
   end
 
   it "should invoke @twitter#rest_oauth_connect with given parameters equivalent to {:id => value.to_i} for :delete case" do
     # Float case
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{{:id => @float.to_i}.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], {:id => @float.to_i}).and_return(@response)
     @twitter.status(:delete, @float)
 
     # Twitter::Status object case
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}?#{{:id => @status.to_i}.to_http_str}").and_return(@response)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], {:id => @status.to_i}).and_return(@response)
     @twitter.status(:delete, @status)
   end
   
