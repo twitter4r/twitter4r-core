@@ -14,7 +14,7 @@ class Twitter::Client
     # Returns the response of the OAuth/HTTP(s) request for REST API requests (not Search)
     def rest_oauth_connect(method, path, params = {}, headers = {}, require_auth = true)
       atoken = rest_access_token
-      uri = rest_request_uri(path)
+      uri = rest_request_uri(path, params)
       if [:get, :delete].include?(method)
         response = atoken.send(method, uri, http_header.merge(headers))
       else
@@ -27,7 +27,7 @@ class Twitter::Client
     # Returns the response of the OAuth/HTTP(s) request for Search API requests (not REST)
     def search_oauth_connect(method, path, params = {}, headers = {}, require_auth = true)
       atoken = search_access_token
-      uri = search_request_uri(path)
+      uri = search_request_uri(path, params)
       if method == :get
         response = atoken.send(method, uri, http_header.merge(headers))
       end
@@ -129,12 +129,16 @@ class Twitter::Client
       @@http_header
     end
 
-    def rest_request_uri(path)
-      "#{self.class.config.path_prefix}#{path}"
+    def rest_request_uri(path, params = nil)
+      uri = "#{self.class.config.path_prefix}#{path}"
+      uri << "?#{params.to_http_str}" if params
+      uri
     end
     
-    def search_request_uri(path)
-      "#{self.class.config.search_path_prefix}#{path}"
+    def search_request_uri(path, params = nil)
+      uri = "#{self.class.config.search_path_prefix}#{path}"
+      uri << "?#{params.to_http_str}" if params
+      uri
     end
     
     def uri_components(service = :rest)
