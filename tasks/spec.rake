@@ -11,7 +11,7 @@ namespace :spec do
   desc "Run specs"
   RSpec::Core::RakeTask.new(:html) do |t|
     t.pattern = 'spec/**/*_spec.rb'
-    t.spec_opts = ['--format', 'html:doc/spec/index.html', '--color']
+    t.spec_opts = ['--format', 'html:doc/spec/index.html']
     t.rcov = true
     t.rcov_opts = ['--options', "spec/spec.opts"]
     t.fail_on_error = true
@@ -20,7 +20,6 @@ namespace :spec do
   desc "Run specs and output to console"
   RSpec::Core::RakeTask.new(:console) do |t|
     t.pattern = 'spec/**/*_spec.rb'
-    #t.spec_opts = ['--color']
     t.rcov = true
     t.rcov_opts = IO.readlines("#{ENV['PWD']}/spec/rcov.opts").map { |line| line.chomp.split(' ') }.flatten
     t.fail_on_error = true
