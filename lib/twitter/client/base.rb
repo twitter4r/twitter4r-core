@@ -67,8 +67,14 @@ class Twitter::Client
 
     def rest_access_token
       unless @rest_access_token
-        key = @oauth_access[:key] || @oauth_access["key"]
-        secret = @oauth_access[:secret] || @oauth_access["secret"]
+        access = @oauth_access
+        if access
+          key = access[:key] || access["key"]
+          secret = access[:secret] || access["secret"]
+        else
+          key = ""
+          secret = ""
+        end
         @rest_access_token = OAuth::AccessToken.new(rest_consumer, key, secret)
       end
       @rest_access_token
