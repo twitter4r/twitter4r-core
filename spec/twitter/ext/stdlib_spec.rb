@@ -40,4 +40,3 @@ describe Time, "#to_s" do
     nilize(@time, @expected_string)
   end
 end
-

@@ -11,7 +11,6 @@ describe Twitter::Client, "#graph(:friends...)" do
     @response = mas_net_http_response(:success)
     @response.stub!(:body).and_return("[1, 2, 3, 4, 5, 6]")
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@friend)
   end
   

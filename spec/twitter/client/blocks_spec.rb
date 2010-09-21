@@ -10,7 +10,6 @@ describe Twitter::Client, "#block" do
     @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@friend)
   end
   

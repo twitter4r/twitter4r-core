@@ -34,7 +34,6 @@ describe Twitter::Client, "#profile" do
     @response = mas_net_http_response(:success, @json)
     @connection = mas_net_http(@response)
 
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@user)
   end
   

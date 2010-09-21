@@ -9,7 +9,6 @@ describe Twitter::Client, "#account_info" do
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
     @response.stub!(:body).and_return("{}")
-    Net::HTTP.stub!(:new).and_return(@connection)
     @rate_limit_status = mock(Twitter::RateLimitStatus)
     @twitter.stub!(:bless_models).and_return({})
   end

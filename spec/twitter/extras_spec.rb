@@ -6,7 +6,6 @@ describe Twitter::Client, "#featured(:users)" do
     @uris = Twitter::Client.class_eval("@@FEATURED_URIS")
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     @users = [
       Twitter::User.new(:screen_name => 'twitter4r'),
       Twitter::User.new(:screen_name => 'dictionary'),      

@@ -9,7 +9,6 @@ describe Twitter::Client, "#authenticate?" do
     @response = mas_net_http_response(:success)
     @error_response = mas_net_http_response(404, "Resource Not Found")
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     @access_key = "applestillsucks"
     @access_secret = "linuxstillrocks"
   end

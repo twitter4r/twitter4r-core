@@ -7,7 +7,6 @@ describe Twitter::Client, "#search" do
     @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, "{\"results\": [], \"refresh_url\":\"?since_id=1768746401&q=blabla\"}")
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     @statuses = []
     Twitter::Status.stub!(:unmarshal).and_return(@statuses)
     @page = 2

@@ -9,7 +9,6 @@ describe Twitter::Client, "#favorites" do
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
     @options = { :page => 4 }
-    Net::HTTP.stub!(:new).and_return(@connection)
     @favorites = []
     Twitter::Status.stub!(:unmarshal).and_return(@favorites)
   end
@@ -79,7 +78,6 @@ module FavoriteSpecMixin
     @default_header = @twitter.send(:http_header)
     @response = mas_net_http_response(:success)
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     @id = 234923423
     @status = mas_twitter_status(:id => @id, :to_i => @id)
     Twitter::Status.stub!(:unmarshal).and_return(@status)

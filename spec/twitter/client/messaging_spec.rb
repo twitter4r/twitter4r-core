@@ -7,7 +7,6 @@ describe Twitter::Client, "#messages" do
     @request = mas_net_http_get(:basic_auth => nil)
     @response = mas_net_http_response(:success, "[]")
     @connection = mas_net_http(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     @messages = []
     Twitter::Message.stub!(:unmarshal).and_return(@messages)
     @page = 2
@@ -77,7 +76,6 @@ describe Twitter::Client, "#message" do
     @connection = mas_net_http(@response)
     @source = Twitter::Client.class_eval("@@defaults[:source]")
 
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::Message.stub!(:unmarshal).and_return(@message)
   end
   

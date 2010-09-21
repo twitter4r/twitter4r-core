@@ -15,7 +15,6 @@ describe Twitter::Client, "#user(id, :info)" do
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
     Twitter::User.stub!(:unmarshal).and_return(@user)
-    Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
@@ -60,7 +59,6 @@ describe Twitter::Client, "#user(id, :friends)" do
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
     Twitter::User.stub!(:unmarshal).and_return(@user)
-    Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request when giving numeric user id" do
@@ -117,7 +115,6 @@ describe Twitter::Client, "#my(:info)" do
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
     @twitter.stub!(:rest_oauth_connect).and_return(@response)
-    Net::HTTP.stub!(:new).and_return(@connection)
     Twitter::User.stub!(:unmarshal).and_return(@user)
   end
   
@@ -156,7 +153,6 @@ describe Twitter::Client, "#my(:friends)" do
     @connection = mas_net_http(@response)
     @uris = Twitter::Client.class_eval("@@USER_URIS")
     Twitter::User.stub!(:unmarshal).and_return(@friends)
-    Net::HTTP.stub!(:new).and_return(@connection)
   end
   
   it "should create expected HTTP GET request" do
