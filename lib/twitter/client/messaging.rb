@@ -3,7 +3,7 @@ class Twitter::Client
     :received => '/direct_messages.json',
     :sent => '/direct_messages/sent.json',
     :post => '/direct_messages/new.json',
-    :delete => '/direct_messages/destroy',
+    :delete => '/direct_messages/destroy.json',
   }
 
   # Provides access to Twitter's Messaging API for received and 
@@ -70,7 +70,7 @@ class Twitter::Client
     when :post
       response = rest_oauth_connect(:post, uri, {:text => value, :user => user, :source => self.class.config.source})
     when :delete
-      response = rest_oauth_connect(:delete, "#{uri}/#{value.to_i}")
+      response = rest_oauth_connect(:delete, uri, :id => value.to_i)
     end
     message = Twitter::Message.unmarshal(response.body)
     bless_model(message)

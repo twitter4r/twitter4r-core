@@ -96,7 +96,7 @@ describe Twitter::Client, "#message" do
   end
   
   it "should create expected HTTP DELETE request for :delete case" do
-    @twitter.should_receive(:rest_oauth_connect).with(:delete, "#{@uris[:delete]}/#{@message.to_i}").and_return(@request)
+    @twitter.should_receive(:rest_oauth_connect).with(:delete, @uris[:delete], :id => @message.to_i).and_return(@request)
     @twitter.message(:delete, @message)
   end
   
