@@ -1,4 +1,27 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'spec_helper'))
+
+shared_examples_for "consumer initialization with timeout" do
+  before(:each) do
+    @old_timeout = nil
+    Twitter::Client.configure do |conf|
+      @old_timeout = conf.timeout
+      conf.timeout = @timeout
+    end
+    @client = client_context
+  end
+
+  it "should set timeout on underlying HTTP object" do
+    consumer = get_consumer
+    http = consumer.http
+    http.read_timeout.should == timeout
+  end
+
+  after(:each) do
+    Twitter::Client.configure do |conf|
+      conf.timeout = @old_timeout
+    end
+  end
+end
 
 describe "Twitter::Client" do
   before(:each) do
@@ -235,5 +258,35 @@ describe Twitter::Client, "#construct_proxy_url" do
       conf.proxy_host = nil
       conf.proxy_port = nil
     end
+  end
+end
+
+describe Twitter::Client, "#rest_consumer" do
+  it_should_behave_like "consumer initialization with timeout"
+  before(:each) do
+    @timeout = 49
+  end
+
+  def timeout
+    @timeout
+  end
+
+  def get_consumer
+    @client.send(:rest_consumer)
+  end
+end
+
+describe Twitter::Client, "#search_consumer" do
+  it_should_behave_like "consumer initialization with timeout"
+  before(:each) do
+    @timeout = 96
+  end
+
+  def timeout
+    @timeout
+  end
+
+  def get_consumer
+    @client.send(:search_consumer)
   end
 end

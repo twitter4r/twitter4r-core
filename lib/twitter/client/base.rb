@@ -61,6 +61,8 @@ class Twitter::Client
         @rest_consumer = OAuth::Consumer.new(key, secret, 
                                              :site => construct_site_url,
                                              :proxy => construct_proxy_url)
+        http = @rest_consumer.http
+        http.read_timeout = cfg.timeout
       end
       @rest_consumer
     end
@@ -94,6 +96,8 @@ class Twitter::Client
         @search_consumer = OAuth::Consumer.new(key, secret, 
                                                :site => construct_site_url(:search),
                                                :proxy => construct_proxy_url)
+        http = @search_consumer.http
+        http.read_timeout = cfg.timeout
       end
       @search_consumer
     end
