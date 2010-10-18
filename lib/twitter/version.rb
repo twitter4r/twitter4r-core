@@ -3,8 +3,8 @@
 
 module Twitter::Version #:nodoc:
   MAJOR = 0
-  MINOR = 5
-  REVISION = 3
+  MINOR = 6
+  REVISION = 0
   class << self
     # Returns X.Y.Z formatted version string
     def to_version
