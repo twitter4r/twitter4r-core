@@ -12,8 +12,9 @@ spec:
   - MIT-LICENSE
   autorequire: twitter
   bindir: bin
-#  executables: 
-#  - twitter4r
+  executables: 
+  - t4rsh
+  - t4r-oauth-access
   add_dependency:
     json: >=1.1.1
     oauth: >=0.4.1

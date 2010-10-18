@@ -72,7 +72,7 @@ module Twitter
   end
 end
 
-if __FILE__ == $0
+def run_twitter4r_oauth_registration!
   @twitter = nil
   Twitter::OAuthAccess.parse_options!
   config_file = Twitter::OAuthAccess.config_file
@@ -87,3 +87,5 @@ if __FILE__ == $0
     abort("Please make sure #{config_file} exists and contains your Twitter credentials (separated by account/environment) and that you specify the account/environment to use, e.g. if you have a 'test' section in your configuration file that you want to use set/export T4R_ENV=test as an environment variable or RAILS_ENV=test or MERB_ENV=test")
   end
 end
+
+run_twitter4r_oauth_registration!
