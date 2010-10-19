@@ -84,7 +84,7 @@ module Twitter
     end
   end # ClassUtilMixin
   
-  # Exception subclass raised when there is an error encountered upon 
+  # Exception API base class raised when there is an error encountered upon 
   # querying or posting to the remote Twitter REST API.
   # 
   # To consume and query any <tt>RESTError</tt> raised by Twitter4R:
@@ -100,6 +100,18 @@ module Twitter
   #  Resource Not Found
   #  /i_am_crap.json
   class RESTError < RuntimeError 
+    class << self
+      @@REGISTRY = {}
+
+      def registry
+        @@REGISTRY
+      end
+
+      def register(status_code)
+        @@REGISTRY[status_code] = self
+      end
+    end
+
     include ClassUtilMixin
     @@ATTRIBUTES = [:code, :message, :uri, :error]
     attr_accessor :code, :message, :uri, :error
@@ -107,31 +119,126 @@ module Twitter
     # Returns string in following format:
     #  "HTTP #{@code}: #{@message} at #{@uri}"
     # For example,
-    #  "HTTP 404: Resource Not Found at /i_am_crap.json"
+    #  "HTTP 404: Resource Not Found at /i_am_crap.json
+    #     >This is the error message sent back by the Twitter.com API"
     def to_s
       "HTTP #{@code}: #{@message} at #{@uri}"
     end
   end # RESTError
+
+  # Runtime error leaf class raised when Twitter.com API has no new results 
+  # to return from the last query. HTTP code: 304 (aka Not Modified).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue NotModifiedError => nme
+  #    timeline = []
+  #  end
+  class NotModifiedError < RESTError; register('304'); end
   
-  # Remote REST API interface representation
-  # 
-  class RESTInterfaceSpec
-  	include ClassUtilMixin
-  	
-  end
+  # Runtime error leaf class raised when client has reached rate limits.
+  # HTTP code: 400 (aka Bad Request).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue RateLimitError => rlre
+  #    # do something here...
+  #  end
+  class RateLimitError < RESTError; register('400'); end
   
-  # Remote REST API method representation
-  # 
-  class RESTMethodSpec
-  	include ClassUtilMixin
-  	attr_accessor :uri, :method, :parameters
-  end
+  # Runtime error leaf class raised when user and/or client credentials 
+  # are missing or invalid. 
+  # HTTP code: 401 (aka Unauthorized).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue UnauthorizedError => uae
+  #    # do something to prompt for valid credentials to user here.
+  #  end
+  class UnauthorizedError < RESTError; register('401'); end
   
-  # Remote REST API method parameter representation
-  # 
-  class RESTParameterSpec
-  	include ClassUtilMixin
-  	attr_accessor :name, :type, :required
-  	def required?; @required; end
-  end
+  # Runtime error leaf class raised when update limit reached. 
+  # HTTP code: 403 (aka Forbidden).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue ForbiddenError => fe
+  #    # do something to notify user that update limit has been reached
+  #  end
+  class ForbiddenError < RESTError; register('403'); end
+  
+  # Runtime error leaf class raised when a resource requested was not found.
+  # HTTP code: 404 (aka Not Found).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue NotFoundError => nfe
+  #    # do something to notify user that resource was not found.
+  #  end
+  class NotFoundError < RESTError; register('404'); end
+  
+  # Runtime error leaf class raised when the format specified in the request
+  # is not understood by the Twitter.com API. 
+  # HTTP code: 406 (aka Not Acceptable).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue NotAcceptableError => nae
+  #    # 
+  #  end
+  class NotAcceptableError < RESTError; register('406'); end
+  
+  # Runtime error leaf class raised when search rate limit reached.
+  # HTTP code: 420.
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue SearchRateLimitError => nme
+  #    # 
+  #  end
+  class SearchRateLimitError < RESTError; register('420'); end
+  
+  # Runtime error leaf class raised when Twitter.com API is borked for 
+  # an unknown reason.
+  # HTTP code: 500 (aka Internal Server Error).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue InternalServerError => ise
+  #    # do something to notify user that an unknown internal server error
+  #    # has arisen.
+  #  end
+  class InternalServerError < RESTError; register('500'); end
+  
+  # Runtime error leaf class raised when Twitter.com servers are being 
+  # upgraded.
+  # HTTP code: 502 (aka Bad Gateway).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue BadGatewayError => bge
+  #    #
+  #  end
+  class BadGatewayError < RESTError; register('502'); end
+ 
+  # Runtime error leaf class raised when Twitter.com servers are unable 
+  # to respond to the current load.
+  # HTTP code: 502 (aka Service Unavailable).
+  #
+  # To handle specifically you would do the following:
+  #  begin
+  #    timeline = twitter.timeline_for(:friends, :since => tweet)
+  #  rescue ServiceUnavailableError => sue
+  #    #
+  #  end
+  class ServiceUnavailableError < RESTError; register('503'); end
 end

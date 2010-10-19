@@ -127,14 +127,26 @@ def mas_net_http_response(status = :success,
     _create_http_response(response, "201", "Created")
   when :redirect || 301
     _create_http_response(response, "301", "Redirect")
+  when :not_modified || 304
+    _create_http_response(response, "304", "Not Modified")
+  when :bad_request || 400
+    _create_http_response(response, "400", "Bad Request")
   when :not_authorized || 401
     _create_http_response(response, "401", "Not Authorized")
   when :forbidden || 403
     _create_http_response(response, "403", "Forbidden")
   when :file_not_found || 404
     _create_http_response(response, "404", "File Not Found")
+  when :not_acceptable || 406
+    _create_http_response(response, "406", "Not Acceptable")
+  when :search_rate_limit || 420
+    _create_http_response(response, "420", "Search Rate Limit")
   when :server_error || 500
     _create_http_response(response, "500", "Server Error")
+  when :bad_gateway || 502
+    _create_http_response(response, "502", "Bad Gateway")
+  when :service_unavailable || 503
+    _create_http_response(response, "503", "Service Unavailable")
   end
   response
 end

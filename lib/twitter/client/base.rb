@@ -46,7 +46,7 @@ class Twitter::Client
     end
     
   private
-    @@http_header = nil
+  @@http_header = nil
 
     def rest_consumer
       unless @rest_consumer
@@ -113,10 +113,11 @@ class Twitter::Client
 
     def raise_rest_error(response, uri = nil)
       map = JSON.parse(response.body)
-      raise Twitter::RESTError.new(:code => response.code, 
-                                   :message => response.message,
-                                   :error => map["error"],
-                                   :uri => uri)        
+      error = Twitter::RESTError.registry[response.code]
+      raise error.new(:code => response.code, 
+                      :message => response.message,
+                      :error => map["error"],
+                      :uri => uri)        
     end
     
     def handle_rest_response(response, uri = nil)

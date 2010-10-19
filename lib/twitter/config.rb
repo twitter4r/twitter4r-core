@@ -55,6 +55,7 @@ module Twitter
       :oauth_request_token_path,
       :oauth_access_token_path,
       :oauth_authorize_path,
+      :exception_registry,
     ]
 
     attr_accessor(*@@ATTRIBUTES)
@@ -91,6 +92,7 @@ module Twitter
                    :oauth_request_token_path => '/oauth/request_token',
                    :oauth_access_token_path => '/oauth/access_token',
                    :oauth_authorize_path => '/oauth/authorize',
+                   :exception_registry => Twitter::RESTError.registry,
     }
     @@config = Twitter::Config.new(@@defaults)
 

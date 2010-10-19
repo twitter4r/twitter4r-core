@@ -27,15 +27,28 @@ describe "Twitter::ClassUtilMixin mixed-in class" do
   end
 end
 
-describe "Twitter::RESTError#to_s" do
-  before(:each) do
-    @hash = { :code => 200, :message => 'OK', :uri => 'http://test.host/bla' }
-    @error = Twitter::RESTError.new(@hash)
-    @expected_message = "HTTP #{@hash[:code]}: #{@hash[:message]} at #{@hash[:uri]}"
+describe Twitter::RESTError do
+  describe "#to_s" do
+    before(:each) do
+      @hash = { :code => 200, :message => 'OK', :uri => 'http://test.host/bla' }
+      @error = Twitter::RESTError.new(@hash)
+      @expected_message = "HTTP #{@hash[:code]}: #{@hash[:message]} at #{@hash[:uri]}"
+    end
+    
+    it "should return @expected_message" do
+      @error.to_s.should eql(@expected_message)
+    end
   end
-  
-  it "should return @expected_message" do
-    @error.to_s.should eql(@expected_message)
+
+  describe ".register" do
+    before(:each) do
+      @status_code = '999'
+      class MyCustomError < Twitter::RESTError; register('999'); end
+    end
+
+    it "should register a new RESTError subclass with a status code" do
+      described_class.registry[@status_code].should eql(MyCustomError)
+    end
   end
 end
 
@@ -125,3 +138,67 @@ describe "Twitter::ClassUtilMixin#require_block" do
     @test_subject = nil
   end
 end
+
+shared_examples_for "REST error returned" do
+  before(:each) do
+    @twitter = client_context
+    @connection = mas_net_http(mas_net_http_response(error_response_code))
+  end
+
+  it "should raise relevant RuntimeError subclass" do
+    lambda {
+      @twitter.account_info
+    }.should raise_error(described_class)
+  end
+end
+
+describe Twitter::NotModifiedError do
+  def error_response_code; :not_modified; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::RateLimitError do
+  def error_response_code; :bad_request; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::UnauthorizedError do
+  def error_response_code; :not_authorized; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::ForbiddenError do
+  def error_response_code; :forbidden; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::NotFoundError do
+  def error_response_code; :file_not_found; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::NotAcceptableError do
+  def error_response_code; :not_acceptable; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::SearchRateLimitError do
+  def error_response_code; :search_rate_limit; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::InternalServerError do
+  def error_response_code; :server_error; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::BadGatewayError do
+  def error_response_code; :bad_gateway; end
+  it_should_behave_like "REST error returned"
+end
+
+describe Twitter::ServiceUnavailableError do
+  def error_response_code; :service_unavailable; end
+  it_should_behave_like "REST error returned"
+end
+
