@@ -225,9 +225,9 @@ module Twitter
   # Represents a status posted to <tt>Twitter</tt> by a <tt>Twitter</tt> user.
   class Status
     include ModelMixin
-    @@ATTRIBUTES = [:id, :text, :source, :truncated, :created_at, :user, :from_user, :to_user,
-                    :favorited, :in_reply_to_status_id, :in_reply_to_user_id,
-                    :in_reply_to_screen_name, :geo]
+    @@ATTRIBUTES = [:id, :id_str, :text, :source, :truncated, :created_at, :user, 
+                    :from_user, :to_user, :favorited, :in_reply_to_status_id, 
+                    :in_reply_to_user_id, :in_reply_to_screen_name, :geo]
     attr_accessor(*@@ATTRIBUTES)
 
     class << self
