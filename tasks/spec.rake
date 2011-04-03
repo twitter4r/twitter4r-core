@@ -11,7 +11,7 @@ namespace :spec do
   desc "Run specs"
   RSpec::Core::RakeTask.new(:html) do |t|
     t.pattern = 'spec/**/*_spec.rb'
-    t.spec_opts = ['--format', 'html:doc/spec/index.html']
+    t.rspec_opts = ['--format', 'html:doc/spec/index.html']
     t.rcov = true
     t.rcov_opts = ['--options', "spec/spec.opts"]
     t.fail_on_error = true
