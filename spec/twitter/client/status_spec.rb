@@ -45,6 +45,16 @@ describe Twitter::Client, "#status" do
     @twitter.status(:post, @message)
   end
 
+  it "should create expected HTTP POST request for :post case when passing Hash with lat/long instead of String" do
+    @twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:post], :lat => 0, :long => 0, :status => @message, :source => @source).and_return(@response)
+    @twitter.status(:post, :status => @message, :lat => 0, :long => 0)
+  end
+
+  it "should create expected HTTP POST request for :post case when passing Hash with place_idinstead of String" do
+    @twitter.should_receive(:rest_oauth_connect).with(:post, @uris[:post], :place_id => 1234, :status => @message, :source => @source).and_return(@response)
+    @twitter.status(:post, :status => @message, :place_id => 1234)
+  end
+
   it "should return nil if nil is passed as value argument for :post case" do
     status = @twitter.status(:post, nil)
     status.should be_nil
