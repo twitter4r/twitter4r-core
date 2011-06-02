@@ -87,10 +87,6 @@ module FavoriteSpecMixin
     "#{@base_uri}/#{method.to_s}/#{id.to_i.to_s}.json"
   end
   
-  def connection=(connection)
-    @connection = connection
-  end
-  
   def finalize
     nilize(@uri, @request, @twitter, @default_header, @response, @error_response, @connection)
   end
