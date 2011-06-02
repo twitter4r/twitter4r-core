@@ -2,6 +2,11 @@ $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'rspec'
 
+if RUBY_VERSION >= "1.9.0"
+  require 'simplecov'
+  SimpleCov.start
+end
+
 def require_project_file(file)
   require(File.join(File.dirname(__FILE__), '..', 'lib', file))  
 end

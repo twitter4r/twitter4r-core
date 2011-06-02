@@ -12,16 +12,20 @@ namespace :spec do
   RSpec::Core::RakeTask.new(:html) do |t|
     t.pattern = 'spec/**/*_spec.rb'
     t.rspec_opts = ['--format', 'html:doc/spec/index.html']
-    t.rcov = true
-    t.rcov_opts = ['--options', "spec/spec.opts"]
     t.fail_on_error = true
+    if RUBY_VERSION < "1.9.0"
+      t.rcov = true
+      t.rcov_opts = ['--options', "spec/spec.opts"]
+    end
   end
 
   desc "Run specs and output to console"
   RSpec::Core::RakeTask.new(:console) do |t|
     t.pattern = 'spec/**/*_spec.rb'
-    t.rcov = true
-    t.rcov_opts = IO.readlines("#{ENV['PWD']}/spec/rcov.opts").map { |line| line.chomp.split(' ') }.flatten
     t.fail_on_error = true
+    if RUBY_VERSION < "1.9.0"
+      t.rcov = true
+      t.rcov_opts = IO.readlines("#{ENV['PWD']}/spec/rcov.opts").map { |line| line.chomp.split(' ') }.flatten
+    end
   end
 end
