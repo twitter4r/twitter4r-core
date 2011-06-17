@@ -30,7 +30,7 @@ module Twitter
       # from JSON serialization.  Currently JSON is only supported 
       # since this is all <tt>Twitter4R</tt> needs.
       def unmarshal(raw)
-        input = JSON.parse(raw)
+        input = JSON.parse(raw) if raw.is_a?(String)
         def unmarshal_model(hash)
           self.new(hash)
         end
@@ -152,6 +152,57 @@ module Twitter
       def defriend(user)
       	@client.friend(:remove, user)
       end
+    end
+  end
+
+  class Trendline
+    include ModelMixin
+    include Enumerable
+    include Comparable
+
+    @@ATTRIBUTES = [:as_of, :type]
+    attr_accessor(*@@ATTRIBUTES)
+
+    class << self
+      def attributes; @@ATTRIBUTES; end
+    end
+
+    # Spaceship operator definition needed by Comparable mixin
+    # for sort, etc.
+    def <=>(other)
+      self.type === other.type && self.as_of <=> other.as_of
+    end
+
+    # each definition needed by Enumerable mixin for first, ...
+    def each
+      trends.each do |t|
+        yield t
+      end
+    end
+
+    # index operator definition needed to iterate over trends 
+    # in the +::Twitter::Trendline+ object using for or otherwise
+    def [](index)
+      trends[index]
+    end
+
+    protected
+      attr_accessor(:trends)
+      # Constructor callback
+      def init
+        @trends = @trends.collect do |trend|
+          ::Twitter::Trend.new(trend) if trend.is_a?(Hash)
+        end if @trends.is_a?(Array)
+      end
+  end
+
+  class Trend
+    include ModelMixin
+    @@ATTRIBUTES = [:name, :url]
+    attr_accessor(*@@ATTRIBUTES)
+
+    class << self
+      def attributes; @@ATTRIBUTES; end
     end
   end
 

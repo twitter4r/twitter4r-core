@@ -238,7 +238,7 @@ describe Test::Model, "#to_i" do
     end
     @model = Test::Model.new(:id => @id)
   end
-
+   
   it "should return @id attribute" do
     @model.to_i.should eql(@id)
   end
@@ -338,8 +338,8 @@ describe Twitter::Message, ".create" do
   it "should raise an ArgumentError if client conext given in params is not a Twitter::Client object" do
     lambda {
       Twitter::Message.create(
-        :client => 3.14159,
-        :text => @text,
+        :client => 3.14159, 
+        :text => @text, 
         :recipient => @recipient)
     }.should raise_error(ArgumentError)
   end
@@ -391,11 +391,11 @@ describe Twitter::User, "#befriend" do
   before(:each) do
     @twitter = client_context
     @user = Twitter::User.new(
-      :id => 1234,
+      :id => 1234, 
       :screen_name => 'mylogin',
       :client => @twitter)
     @friend = Twitter::User.new(
-      :id => 5678,
+      :id => 5678, 
       :screen_name => 'friend',
       :client => @twitter)
   end
@@ -414,11 +414,11 @@ describe Twitter::User, "#defriend" do
   before(:each) do
     @twitter = client_context
     @user = Twitter::User.new(
-      :id => 1234,
+      :id => 1234, 
       :screen_name => 'mylogin',
       :client => @twitter)
     @friend = Twitter::User.new(
-      :id => 5678,
+      :id => 5678, 
       :screen_name => 'friend',
       :client => @twitter)
   end
@@ -504,5 +504,21 @@ describe Twitter::Message, "#to_s" do
   
   after(:each) do
     nilize(@text, @message)
+  end
+end
+
+describe Twitter::Trendline, ".new" do
+  it "should initialize trends into an Array of Twitter::Trend objects" do
+    trendline = Twitter::Trendline.new(:trends => [
+                                       {:name => "booyah", :url => "http://twitter.com/search?q=booyah"},
+                                       {:name => "twitter4r", :url => "http://twitter.com/search?q=twitter4r"},
+    ])
+    trendline.each do |t|
+      t.should be_a(Twitter::Trend)
+    end
+    booyah = trendline.first
+    booyah.name.should === "booyah"
+    twitter4r = trendline[-1]
+    twitter4r.name.should === "twitter4r"
   end
 end
