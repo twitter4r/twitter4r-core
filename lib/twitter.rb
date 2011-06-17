@@ -8,7 +8,7 @@ def require_local(suffix)
 end
 
 # For better unicode support in 1.8
-if RUBY_VERSION < '1.9'
+if RUBY_VERSION < '1.9.0'
   $KCODE = 'u'
   require 'jcode'
 end
@@ -22,10 +22,6 @@ require('uri')
 require('cgi')
 require('json')
 require('oauth')
-
-if RUBY_VERSION < "1.9.0"
-  require('yaml')
-end
 
 # Ordering matters...pay attention here!
 require_local('twitter/ext')
