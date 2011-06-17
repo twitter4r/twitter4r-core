@@ -74,8 +74,7 @@ class Twitter::Client
           key = access[:key] || access["key"]
           secret = access[:secret] || access["secret"]
         else
-          key = ""
-          secret = ""
+          raise Error, "No access tokens are set"
         end
         @rest_access_token = OAuth::AccessToken.new(rest_consumer, key, secret)
       end
