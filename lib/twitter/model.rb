@@ -385,8 +385,13 @@ module Twitter
       !!@in_reply_to_status_id
     end
 
-    def reply(status)
-      client.status(:reply, :status => status, :in_reply_to_status_id => @id)
+    # Convenience method to allow client developers to not have to worry about 
+    # setting the +in_reply_to_status_id+ attribute or prefixing the status 
+    # text with the +screen_name+ being replied to.
+    def reply(reply)
+      status_reply = "@#{user.screen_name} #{reply}"
+      client.status(:reply, :status => status_reply, 
+                    :in_reply_to_status_id => @id)
     end
     
     protected
