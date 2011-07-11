@@ -155,6 +155,63 @@ module Twitter
     end
   end
 
+  # Represents a location in Twitter
+  class Location
+    include ModelMixin
+
+    @@ATTRIBUTES = [:name, :woeid, :country, :url, :countryCode, :parentid, :placeType]
+    attr_accessor(*@@ATTRIBUTES)
+
+    class << self
+      def attributes; @@ATTRIBUTES; end
+    end
+
+
+
+    # Alias to +countryCode+ for those wanting to use consistent naming 
+    # convention for attribute
+    def country_code
+      @countryCode
+    end
+
+    # Alias to +parentid+ for those wanting to use consistent naming 
+    # convention for attribute
+    def parent_id
+      @parentid
+    end
+
+    # Alias to +placeType+ for those wanting to use consistent naming 
+    # convention for attribute
+    def place_type
+      @place_type
+    end
+
+    protected
+      def init
+        puts @placeType
+        @placeType = ::Twitter::PlaceType.new(:name => @placeType["name"], 
+                                              :code => @placeType["code"]) if @placeType.is_a?(Hash)
+      end
+  end
+
+  # Represents a type of a place.
+  class PlaceType
+    include ModelMixin
+
+    @@ATTRIBUTES = [:name, :code]
+    attr_accessor(*@@ATTRIBUTES)
+
+    class << self
+      def attributes; @@ATTRIBUTES; end
+    end
+  end
+
+  # Represents a sorted, dated and typed list of trends.
+  #
+  # To find out when this +Trendline+ was created query the +as_of+ attribute.
+  # To find out what type +Trendline+ is use the +type+ attribute.
+  # You can iterator over the trends in the +Trendline+ with +each+ or by 
+  # index, whichever you prefer.
   class Trendline
     include ModelMixin
     include Enumerable
