@@ -166,8 +166,6 @@ module Twitter
       def attributes; @@ATTRIBUTES; end
     end
 
-
-
     # Alias to +countryCode+ for those wanting to use consistent naming 
     # convention for attribute
     def country_code
@@ -184,6 +182,12 @@ module Twitter
     # convention for attribute
     def place_type
       @place_type
+    end
+
+    # Convenience method to output meaningful representation to STDOUT as per 
+    # Ruby convention
+    def inspect
+      "#{name} / #{woeid} / #{countryCode}\n#{url}\n"
     end
 
     protected
