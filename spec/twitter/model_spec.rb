@@ -459,16 +459,19 @@ end
 describe Twitter::Status, "#reply(status_text)" do
   before(:each) do
     @twitter = client_context
+    @user = Twitter::User.new(:screen_name => "ilovephpnot")
     @status = Twitter::Status.new(
         :id => 1234,
         :text => "The status text",
+        :user => @user,
         :client => @twitter)
     @reply_text = "Reply text goes here"
     @reply_status = Twitter::Status.new()
   end
 
   it "should invoke #status(:reply, :status => ..., :in_reply_to_status_id => ...) on client context" do
-    @twitter.should_receive(:status).with(:reply, :status => @reply_text, :in_reply_to_status_id => @status.id).and_return(@reply_status)
+    @twitter.should_receive(:status).with(:reply, :status => "@#{@user.screen_name} #{@reply_text}",
+                                          :in_reply_to_status_id => @status.id).and_return(@reply_status)
     @status.reply(@reply_text)
   end
 
