@@ -14,6 +14,10 @@ class Twitter::Client
   def trends(type = :global)
     uri = @@TRENDS_URIS[type]
     response = rest_oauth_connect(:get, uri)
-    bless_models(Twitter::Trendline.unmarshal(response.body))
+    if type === :locations
+      bless_models(Twitter::Location.unmarshal(response.body))
+    else
+      bless_models(Twitter::Trendline.unmarshal(response.body))
+    end
   end
 end
