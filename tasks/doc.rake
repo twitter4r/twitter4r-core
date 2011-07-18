@@ -3,8 +3,8 @@ require 'rake/rdoctask'
 desc 'Generate RDoc'
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
-  rdoc.title = "Twitter4R v#{Twitter::Version.to_version}: Open Source Ruby Client Library for the Twitter REST API"
-  rdoc.template = 'config/rdoc_template.rb'
+  rdoc.title = "Twitter4R v#{Twitter::Version.to_version}: Idiomatic Ruby Open Source Library for the Twitter REST and Search APIs"
+#  rdoc.template = File.join(File.dirname(__FILE__), '..', 'config', 'rdoc_template.rb')
   rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README' << '--line-numbers'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('CHANGES')
