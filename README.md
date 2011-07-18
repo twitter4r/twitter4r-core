@@ -33,7 +33,7 @@ To create a client object with access tokens:
 
 <pre><code>
   client = Twitter::Client.new(:oauth_access => {
-      :key => ACCESS_KEY, :secret => ACCESS_SECRET
+      :key => ACCESS\_KEY, :secret => ACCESS\_SECRET
     }
   client.status(:post, "Your awesome less than 140 characters tweet goes here!!! #with #hashtag #goodness")
 </code></pre>
@@ -83,6 +83,7 @@ Twitter.com Search API coverage includes:
 ## Contributors
 
 Code:
+
 * Kaiichi Matsunaga <ma2 at lifemedia dot co dot jp> - proxy code suggestion
 * Sergio Santos <> - message paging code suggestion
 * Adam Stiles <adam at stilesoft dot com> - URI.encode => CGI.escape fix
@@ -94,6 +95,7 @@ Code:
 * John McKerrell <@mcknut on twitter> - added geo attribute to Twitter::Message.
 
 Design Suggestions:
+
 * Bosco So <rubymeetup at boscoso dot com> - making Twitter::Error a RuntimeError instead of an Exception to prevent irb from crashing out.
 
 ## External Dependencies
