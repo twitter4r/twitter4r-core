@@ -12,10 +12,7 @@ class Twitter::Client
   #    puts tweet.text
   #  end
   # 
-  # An <tt>ArgumentError</tt> will be raised if an invalid <tt>action</tt> 
-  # is given.  Valid actions are:
-  # * +:received+
-  # * +:sent+
+  # All options will be passed on to the Twitter.com Search REST API
   def search(options = {})
     uri = @@SEARCH_URIS[:basic]
     response = search_oauth_connect(:get, uri, options)
