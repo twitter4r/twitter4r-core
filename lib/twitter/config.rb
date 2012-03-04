@@ -17,6 +17,10 @@ module Twitter
   # * <tt>proxy_port</tt> - proxy host to use.  Defaults to 8080.
   # * <tt>proxy_user</tt> - proxy username to use.  Defaults to nil.
   # * <tt>proxy_pass</tt> - proxy password to use.  Defaults to nil.
+  # * <tt>media_protocol</tt> - <tt>:http</tt>, <tt>:https</tt> or <tt>:ssl</tt> supported.  <tt>:ssl</tt> is an alias for <tt>:https</tt>.  Defaults to <tt>:ssl</tt>
+  # * <tt>media_host</tt> - hostname to connect to for the Twitter Upload service.  Defaults to <tt>'twitter.com'</tt>.
+  # * <tt>media_port</tt> - port to connect to for the Twitter Upload service.  Defaults to <tt>443</tt>.
+  # * <tt>media_path_prefix</tt> - path to prefix URIs of Upload API calls.  Defaults to <tt>""</tt>.
   # * <tt>user_agent</tt> - user agent string to use for each request of the HTTP header.
   # * <tt>application_name</tt> - name of your client application.  Defaults to 'Twitter4R'.
   # * <tt>application_version</tt> - version of your client application.  Defaults to current <tt>Twitter::Version.to_version</tt>.
@@ -40,10 +44,14 @@ module Twitter
       :search_port,
       :search_path_prefix,
       :proxy_protocol,
-      :proxy_host, 
-      :proxy_port, 
-      :proxy_user, 
-      :proxy_pass, 
+      :proxy_host,
+      :proxy_port,
+      :proxy_user,
+      :proxy_pass,
+      :media_protocol,
+      :media_host,
+      :media_port,
+      :media_path_prefix,
       :user_agent,
       :application_name,
       :application_version,
@@ -83,6 +91,10 @@ module Twitter
                    :proxy_protocol => "http",
                    :proxy_host => nil,
                    :proxy_port => 8080,
+                   :media_host => 'upload.twitter.com',
+                   :media_port => 443,
+                   :media_protocol => :ssl,
+                   :media_path_prefix => "",
                    :user_agent => "default",
                    :application_name => 'Twitter4R',
                    :application_version => Twitter::Version.to_version,
