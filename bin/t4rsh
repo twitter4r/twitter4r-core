@@ -2,19 +2,19 @@
 
 require("irb")
 require("irb/completion")
-require("rubygems")
 
 begin
-  gem('twitter4r', '>0.3.0')
+  gem('twitter4r', '>=0.5.0')
   require("twitter")
   require("twitter/console")
 rescue Gem::LoadError
   begin
-    gem("mbbx6spp-twitter4r", '>=0.3.1')
+    require("rubygems")
+    gem("twitter4r", '>=0.5.0')
     require("twitter")
     require("twitter/console")
   rescue Gem::LoadError
-    abort("Error: You must install either twitter4r gem from Rubyforge with version 0.3.1 or greater or the mbbx6spp-twitter4r gem from GitHub's servers with version 0.3.1 or greater (and make sure it is a recent version of the gem).")
+    abort("Error: You must install a twitter4r gem of version 0.5.0 or greater.")
   end
 end
 
