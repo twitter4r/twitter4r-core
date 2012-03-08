@@ -31,6 +31,7 @@ module Twitter
       # since this is all <tt>Twitter4R</tt> needs.
       def unmarshal(raw)
         input = JSON.parse(raw) if raw.is_a?(String)
+
         def unmarshal_model(hash)
           self.new(hash)
         end
@@ -333,13 +334,110 @@ module Twitter
       @client.user(@id, :friends)
     end
   end # User
-  
+
+  # Represents the entities from a <tt>Twitter</tt> post
+  #
+  # Can include media, user mentions, URLs and hashtags. For more details see:
+  # https://dev.twitter.com/docs/tweet-entities
+  #
+  # Must enable include_entities as an option in the request to receive these.
+  class Entities
+    include ModelMixin
+    @@ATTRIBUTES = [:urls, :media, :user_mentions, :hashtags ]
+    attr_accessor(*@@ATTRIBUTES)
+
+    class << self
+      # Used as factory method callback
+      def attributes; @@ATTRIBUTES; end
+    end
+
+    protected
+      # Constructor callback
+      def init
+        @urls = @urls.collect {|e| e.is_a?(Hash) ? Url.new(e) : e } if @urls.is_a?(Array)
+        @media = @media.collect {|e| e.is_a?(Hash) ? Media.new(e) : e } if @media.is_a?(Array)
+        @user_mentions = @user_mentions.collect {|e| e.is_a?(Hash) ? UserMention.new(e) : e } if @user_mentions.is_a?(Array)
+        @hashtags = @hashtags.collect {|e| e.is_a?(Hash) ? HashTag.new(e) : e } if @hashtags.is_a?(Array)
+
+      end
+  end
+
+  # Represents a URL entity.
+  #
+  # For details, see:
+  # https://dev.twitter.com/docs/tweet-entities
+  class Url
+      include ModelMixin
+      @@ATTRIBUTES = [:url, :display_url, :expanded_url, :indices ]
+      attr_accessor(*@@ATTRIBUTES)
+
+      class << self
+        # Used as factory method callback
+        def attributes; @@ATTRIBUTES; end
+      end
+
+      def to_s
+        @display_url
+      end
+  end # Url
+
+  # Represents a media entity.
+  #
+  # For details, see:
+  # https://dev.twitter.com/docs/tweet-entities
+  class Media
+      include ModelMixin
+      @@ATTRIBUTES = [:id, :id_str, :media_url, :media_url_https, :url, :display_url,
+                      :expanded_url, :sizes, :type, :indices ]
+      attr_accessor(*@@ATTRIBUTES)
+
+      class << self
+        # Used as factory method callback
+        def attributes; @@ATTRIBUTES; end
+      end
+  end # Media
+
+  # Represents a user mention entity.
+  #
+  # For details, see:
+  # https://dev.twitter.com/docs/tweet-entities
+  class UserMention
+      include ModelMixin
+      @@ATTRIBUTES = [:id, :id_str, :screen_name, :name, :indices ]
+      attr_accessor(*@@ATTRIBUTES)
+
+      class << self
+        # Used as factory method callback
+        def attributes; @@ATTRIBUTES; end
+      end
+
+      def to_s
+        "@#{@screen_name}"
+      end
+  end # UserMention
+
+
+  # Represents a hashtag entity.
+  #
+  # For details, see:
+  # https://dev.twitter.com/docs/tweet-entities
+  class HashTag
+      include ModelMixin
+      @@ATTRIBUTES = [:text, :indices ]
+      attr_accessor(*@@ATTRIBUTES)
+
+      class << self
+        # Used as factory method callback
+        def attributes; @@ATTRIBUTES; end
+      end
+  end # Hashtag
+
   # Represents a status posted to <tt>Twitter</tt> by a <tt>Twitter</tt> user.
   class Status
     include ModelMixin
     @@ATTRIBUTES = [:id, :id_str, :text, :source, :truncated, :created_at, :user, 
                     :from_user, :to_user, :favorited, :in_reply_to_status_id, 
-                    :in_reply_to_user_id, :in_reply_to_screen_name, :geo]
+                    :in_reply_to_user_id, :in_reply_to_screen_name, :geo, :entities]
     attr_accessor(*@@ATTRIBUTES)
 
     class << self
@@ -398,6 +496,8 @@ module Twitter
       # Constructor callback
       def init
         @user = User.new(@user) if @user.is_a?(Hash)
+        @entities = Entities.new(@entities) if @entities.is_a?(Hash)
+
         @created_at = Time.parse(@created_at) if @created_at.is_a?(String)
       end    
   end # Status

@@ -93,6 +93,7 @@ Code:
 * Filipe Giusti <filipegiusti at gmail dot com> - fixed users/show issue that Twitter.com changed from under us, also inspired the v0.5.2 bugfix release by submitting great issue example code.
 * Seth Cousins <seth.cousins at gmail dot com> - added HTTP timeout option and provided a patch that inspired the OAuth support for Twitter4R
 * John McKerrell <@mcknut on twitter> - added geo attribute to Twitter::Message.
+* domrout on GitHub - added Tweet Entities.
 
 Design Suggestions:
 

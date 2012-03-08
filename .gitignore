@@ -8,3 +8,6 @@ marketing/samples/twitter4rails.post-0_2_4/log
 marketing/samples/twitter4rails.post-0_2_4/tmp
 twitter*.gem
 coverage.data
+coverage
+gemfile.lock
+*.DS_Store

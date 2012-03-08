@@ -6,7 +6,7 @@ spec:
   require_path: lib
   has_rdoc: true
   extra_rdoc_files:
-  - README
+  - "README.md"
   - CHANGES
   - TODO
   - MIT-LICENSE
@@ -14,7 +14,8 @@ spec:
   bindir: bin
   executables:
   - t4rsh
-  - t4r-oauth-access
+  - "t4r-oauth-access"
+
   add_dependency:
     json: ">=1.6.5"
     oauth: ">=0.4.5"
@@ -25,7 +26,7 @@ spec:
   required_ruby_version: ">=1.8.7"
   author: Susan Potter
   email: twitter4r-users@googlegroups.com
-  homepage: http://twitter4r.rubyforge.org
+  homepage: "http://twitter4r.rubyforge.org"
   rubyforge_project: twitter4r
   files: <% (self.project_files + self.spec_files).each do |file| %>
   - <%= Pathname.new(file).relative_path_from(Pathname.new(@root_dir)) %>
