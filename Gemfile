@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem "oauth", ">=0.4.1"
+gem "oauth", ">=0.4.5"
 gem "rake"
 
 if RUBY_VERSION < "1.9.0"

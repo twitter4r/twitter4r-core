@@ -12,17 +12,17 @@ spec:
   - MIT-LICENSE
   autorequire: twitter
   bindir: bin
-  executables: 
+  executables:
   - t4rsh
   - t4r-oauth-access
   add_dependency:
-    json: >=1.1.1
-    oauth: >=0.4.1
+    json: ">=1.6.5"
+    oauth: ">=0.4.5"
   requirements:
   - Ruby 1.8.6+
   - json gem, version 0.4.3 or higher
   - jcode (for unicode support)
-  required_ruby_version: >=1.8.6
+  required_ruby_version: ">=1.8.7"
   author: Susan Potter
   email: twitter4r-users@googlegroups.com
   homepage: http://twitter4r.rubyforge.org
