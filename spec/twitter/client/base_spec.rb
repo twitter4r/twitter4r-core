@@ -211,6 +211,14 @@ describe Twitter::Client, "search consumer token" do
   end
 end
 
+describe Twitter::Client, "media consumer token" do
+  it_should_behave_like "consumer token overrides"
+
+  def get_consumer(client)
+    client.send(:media_consumer)
+  end
+end
+
 describe Twitter::Client, "#construct_proxy_url" do
   before(:each) do
     @host = "localhost"
@@ -288,5 +296,20 @@ describe Twitter::Client, "#search_consumer" do
 
   def get_consumer
     @client.send(:search_consumer)
+  end
+end
+
+describe Twitter::Client, "#media_consumer" do
+  it_should_behave_like "consumer initialization with timeout"
+  before(:each) do
+    @timeout = 96
+  end
+
+  def timeout
+    @timeout
+  end
+
+  def get_consumer
+    @client.send(:media_consumer)
   end
 end
