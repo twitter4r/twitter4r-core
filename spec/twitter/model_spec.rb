@@ -23,17 +23,17 @@ describe Twitter::Status, "unmarshaling" do
     @status = Twitter::Status.new @json_hash
     @status.user = @user
   end
-  
+
   it "should respond to unmarshal class method" do
     Twitter::Status.should respond_to(:unmarshal)
   end
-  
+
   it "should return expected Twitter::Status object for singular case" do
     status = Twitter::Status.unmarshal(JSON.unparse(@json_hash))
     status.should_not be(nil)
     status.should eql(@status)
   end
-  
+
   it "should return expected array of Twitter::Status objects for plural case" do
     statuses = Twitter::Status.unmarshal(JSON.unparse([@json_hash]))
     statuses.should_not be(nil)
@@ -53,17 +53,17 @@ describe Twitter::User, "unmarshaling" do
                    "screen_name" => "LucyDominatrix", }
     @user = Twitter::User.new @json_hash
   end
-  
+
   it "should respond to unmarshal class method" do
     Twitter::User.should respond_to(:unmarshal)
   end
-  
+
   it "should return expected arry of Twitter::User objects for plural case" do
     users = Twitter::User.unmarshal(JSON.unparse([@json_hash]))
     users.should have(1).entries
     users.first.should eql(@user)
   end
-  
+
   it "should return expected Twitter::User object for singular case" do
     user = Twitter::User.unmarshal(JSON.unparse(@json_hash))
     user.should_not be(nil)
@@ -79,7 +79,7 @@ describe "Twitter::ModelMixin#to_hash" do
       attr_accessor *@@ATTRIBUTES
       def self.attributes; @@ATTRIBUTES; end
     end
-    
+
     class Hash
       def eql?(other)
         return false unless other # trivial nil case.
@@ -96,11 +96,11 @@ describe "Twitter::ModelMixin#to_hash" do
     @attributes = {:id => 14, :name => 'State', :value => 'Illinois'}
     @model = Model.new(@attributes)
   end
-  
+
   it "should return expected hash representation of given model object" do
     @model.to_hash.should eql(@attributes)
   end
-  
+
   after(:each) do
     nilize(@attributes, @model)
   end
@@ -113,19 +113,19 @@ describe Twitter::User, ".find" do
     @screen_name = 'ascreenname'
     @expected_user = Twitter::User.new(:id => @id, :screen_name => @screen_name)
   end
-  
+
   it "should invoke given Twitter::Client's #user method with expected arguments" do
     # case where id => @id
     @twitter.should_receive(:user).with(@id).and_return(@expected_user)
     user = Twitter::User.find(@id, @twitter)
     user.should eql(@expected_user)
-    
+
     # case where id => @screen_name, which is also valid
     @twitter.should_receive(:user).with(@screen_name).and_return(@expected_user)
     user = Twitter::User.find(@screen_name, @twitter)
     user.should eql(@expected_user)
   end
-  
+
   after(:each) do
     nilize(@twitter, @id, @screen_name, @expected_user)
   end
@@ -139,13 +139,13 @@ describe Twitter::Status, ".find" do
     @user = Twitter::User.new(:id => @id, :screen_name => @screen_name)
     @expected_status = Twitter::Status.new(:id => @id, :text => @text, :user => @user)
   end
-  
+
   it "should invoke given Twitter::Client's #status method with expected arguments" do
     @twitter.should_receive(:status).with(:get, @id).and_return(@expected_status)
     status = Twitter::Status.find(@id, @twitter)
     status.should eql(@expected_status)
   end
-  
+
   after(:each) do
     nilize(@twitter, @id, @text, @user, @expected_status)
   end
@@ -156,17 +156,17 @@ describe Test::Model, "#bless" do
     @twitter = Twitter::Client.from_config('config/twitter.yml')
     @model = Test::Model.new
   end
-  
+
   it "should delegate to #basic_bless" do
     @model.should_receive(:basic_bless).and_return(@twitter)
     @model.bless(@twitter)
   end
-  
+
   it "should set client attribute of self" do
     @model.should_receive(:client=).once
     @model.bless(@twitter)
   end
-  
+
   after(:each) do
     nilize(@model, @twitter)
   end
@@ -180,15 +180,15 @@ describe Twitter::User, "#is_me?" do
     @user_not_me.bless(@twitter)
     @user_me.bless(@twitter)
   end
-  
+
   it "should return true when Twitter::User object represents authenticated user of client context" do
     @user_me.is_me?.should be_true
   end
-  
+
   it "should return false when Twitter::User object does not represent authenticated user of client context" do
     @user_not_me.is_me?.should be_false
   end
-  
+
   after(:each) do
     nilize(@twitter, @user_not_me, @user_me)
   end
@@ -201,12 +201,12 @@ describe Twitter::User, "#friends" do
     @user = Twitter::User.new(:id => @id, :screen_name => 'twitter4r')
     @user.bless(@twitter)
   end
-  
+
   it "should delegate to @client.user(@id, :friends)" do
     @twitter.should_receive(:user).with(@id, :friends)
     @user.friends
   end
-  
+
   after(:each) do
     nilize(@twitter, @id, @user)
   end
@@ -216,17 +216,17 @@ describe Twitter::User, "#followers" do
   before(:each) do
     @twitter = Twitter::Client.from_config('config/twitter.yml')
     @id = 5701682
-    @user = Twitter::User.new(:id => @id, :screen_name => 'twitter4r')    
+    @user = Twitter::User.new(:id => @id, :screen_name => 'twitter4r')
     @user.bless(@twitter)
   end
-  
+
   it "should delegate to @client.my(:followers)" do
     @twitter.should_receive(:my).with(:followers, {})
     @user.followers
   end
-  
+
   after(:each) do
-    nilize(@twitter, @id, @user)    
+    nilize(@twitter, @id, @user)
   end
 end
 
@@ -238,11 +238,11 @@ describe Test::Model, "#to_i" do
     end
     @model = Test::Model.new(:id => @id)
   end
-   
+
   it "should return @id attribute" do
     @model.to_i.should eql(@id)
   end
-  
+
   after(:each) do
     nilize(@model, @id)
   end
@@ -256,11 +256,11 @@ describe Test::Model, "#to_s" do
     @text = 'Some text for the message body here'
     @model = Test::Model.new(:text => @text)
   end
-  
+
   it "should return expected text when a @text attribute exists for the model" do
     @model.to_s.should eql(@text)
   end
-  
+
   after(:each) do
     nilize(@model)
   end
@@ -280,37 +280,37 @@ describe Twitter::Status, ".create" do
     @text = 'My status update'
     @status = Twitter::Status.new(:text => @text, :client => @twitter)
   end
-  
+
   it "should invoke #status(:post, text) on client context given" do
     @twitter.should_receive(:status).with(:post, @text).and_return(@status)
     Twitter::Status.create(:text => @text, :client => @twitter)
   end
-  
+
   it "should raise an ArgumentError when no client is given in params" do
     lambda {
       Twitter::Status.create(:text => @text)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError when no text is given in params" do
     @twitter.should_receive(:is_a?).with(Twitter::Client)
     lambda {
       Twitter::Status.create(:client => @twitter)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError when text given in params is not a String" do
     lambda {
       Twitter::Status.create(:client => @twitter, :text => 234493)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError when client context given in params is not a Twitter::Client object" do
     lambda {
       Twitter::Status.create(:client => 'a string instead of a Twitter::Client', :text => @text)
     }.should raise_error(ArgumentError)
   end
-  
+
   after(:each) do
     nilize(@twitter, @text, @status)
   end
@@ -323,27 +323,27 @@ describe Twitter::Message, ".create" do
     @recipient = Twitter::User.new(:id => 234958)
     @message = Twitter::Message.new(:text => @text, :recipient => @recipient)
   end
-  
+
   it "should invoke #message(:post, text, recipient) on client context given" do
     @twitter.should_receive(:message).with(:post, @text, @recipient).and_return(@message)
     Twitter::Message.create(:client => @twitter, :text => @text, :recipient => @recipient)
   end
-  
+
   it "should raise an ArgumentError if no client context is given in params" do
     lambda {
       Twitter::Message.create(:text => @text, :recipient => @recipient)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError if client conext given in params is not a Twitter::Client object" do
     lambda {
       Twitter::Message.create(
-        :client => 3.14159, 
-        :text => @text, 
+        :client => 3.14159,
+        :text => @text,
         :recipient => @recipient)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError if no text is given in params" do
     @twitter.should_receive(:is_a?).with(Twitter::Client)
     lambda {
@@ -352,7 +352,7 @@ describe Twitter::Message, ".create" do
         :recipient => @recipient)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError if text given in params is not a String" do
     @twitter.should_receive(:is_a?).with(Twitter::Client)
     lambda {
@@ -362,7 +362,7 @@ describe Twitter::Message, ".create" do
         :recipient => @recipient)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError if no recipient is given in params" do
     @text.should_receive(:is_a?).with(String)
     lambda {
@@ -371,7 +371,7 @@ describe Twitter::Message, ".create" do
         :text => @text)
     }.should raise_error(ArgumentError)
   end
-  
+
   it "should raise an ArgumentError if recipient given in params is not a Twitter::User, Integer or String object" do
     @text.should_receive(:is_a?).with(String)
     lambda {
@@ -381,7 +381,7 @@ describe Twitter::Message, ".create" do
         :recipient => 3.14159)
     }.should raise_error(ArgumentError)
   end
-  
+
   after(:each) do
     nilize(@twitter, @text, @recipient, @message)
   end
@@ -391,20 +391,20 @@ describe Twitter::User, "#befriend" do
   before(:each) do
     @twitter = client_context
     @user = Twitter::User.new(
-      :id => 1234, 
+      :id => 1234,
       :screen_name => 'mylogin',
       :client => @twitter)
     @friend = Twitter::User.new(
-      :id => 5678, 
+      :id => 5678,
       :screen_name => 'friend',
       :client => @twitter)
   end
-  
+
   it "should invoke #friend(:add, user) on client context" do
     @twitter.should_receive(:friend).with(:add, @friend).and_return(@friend)
     @user.befriend(@friend)
   end
-  
+
   after(:each) do
     nilize(@twitter, @user, @friend)
   end
@@ -414,20 +414,20 @@ describe Twitter::User, "#defriend" do
   before(:each) do
     @twitter = client_context
     @user = Twitter::User.new(
-      :id => 1234, 
+      :id => 1234,
       :screen_name => 'mylogin',
       :client => @twitter)
     @friend = Twitter::User.new(
-      :id => 5678, 
+      :id => 5678,
       :screen_name => 'friend',
       :client => @twitter)
   end
-  
+
   it "should invoke #friend(:remove, user) on client context" do
     @twitter.should_receive(:friend).with(:remove, @friend).and_return(@friend)
     @user.defriend(@friend)
   end
-  
+
   after(:each) do
     nilize(@twitter, @user, @friend)
   end
@@ -437,7 +437,7 @@ describe Twitter::Status, "#reply?" do
   before(:each) do
     @status = Twitter::Status.new(
       :id => 123456789,
-      :text => "Wazzup?", 
+      :text => "Wazzup?",
       :user => mock(Twitter::User)
     )
     @reply = Twitter::Status.new(
@@ -477,7 +477,7 @@ describe Twitter::Status, "#reply(status_text)" do
 
   after(:each) do
     nilize(@twitter, @status)
-  end 
+  end
 end
 
 describe Twitter::Status, "#to_s" do
@@ -485,11 +485,11 @@ describe Twitter::Status, "#to_s" do
     @text = 'Aloha'
     @status = Twitter::Status.new(:text => @text)
   end
-  
+
   it "should render text attribute" do
     @status.to_s.should be(@text)
   end
-  
+
   after(:each) do
     nilize(@text, @status)
   end
@@ -500,11 +500,11 @@ describe Twitter::Message, "#to_s" do
     @text = 'Aloha'
     @message = Twitter::Message.new(:text => @text)
   end
-  
+
   it "should render text attribute" do
     @message.to_s.should be(@text)
   end
-  
+
   after(:each) do
     nilize(@text, @message)
   end

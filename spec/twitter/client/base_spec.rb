@@ -34,7 +34,7 @@ describe "Twitter::Client" do
       client = Twitter::Client.new(@init_hash)
     end.should_not raise_error
     client.send(:login).should eql(@init_hash[:login])
-  end  
+  end
 end
 
 describe Twitter::Client, "#inspect" do
@@ -60,7 +60,7 @@ describe Twitter::Client, "#http_header" do
       conf.application_url = @application_url
     end
     @expected_headers = {
-      'Accept' => 'text/x-json',
+      'Accept' => 'application/json',
       'X-Twitter-Client' => @application_name,
       'X-Twitter-Client-Version' => @application_version,
       'X-Twitter-Client-URL' => @application_url,
@@ -70,12 +70,12 @@ describe Twitter::Client, "#http_header" do
     # reset @@http_header class variable in Twitter::Client class
     Twitter::Client.class_eval("@@http_header = nil")
   end
-  
+
   it "should always return expected HTTP headers" do
     headers = @twitter.send(:http_header)
     headers.should === @expected_headers
   end
-  
+
   it "should cache HTTP headers Hash in class variable after first invocation" do
     cache = Twitter::Client.class_eval("@@http_header")
     cache.should be_nil
@@ -84,7 +84,7 @@ describe Twitter::Client, "#http_header" do
     cache.should_not be_nil
     cache.should === @expected_headers
   end
-  
+
   after(:each) do
     nilize(@user_agent, @application_name, @application_version, @application_url, @twitter, @expected_headers)
   end
@@ -95,12 +95,12 @@ describe Twitter::Client, "#bless_model" do
     @twitter = client_context
     @model = Twitter::User.new
   end
-  
+
   it "should recieve #client= message on given model to self" do
   	@model.should_receive(:client=).with(@twitter)
     model = @twitter.send(:bless_model, @model)
   end
-  
+
   it "should set client attribute on given model to self" do
     model = @twitter.send(:bless_model, @model)
     model.client.should eql(@twitter)
@@ -111,14 +111,14 @@ describe Twitter::Client, "#bless_model" do
     model = @twitter.send(:bless_model, nil)
     model.should be_nil
   end
-  
+
   # needed to alert developer that the model needs to respond to #client= messages appropriately.
   it "should raise an error if passing in a non-nil object that doesn't not respond to the :client= message" do
     lambda {
-      @twitter.send(:bless_model, Object.new)      
+      @twitter.send(:bless_model, Object.new)
     }.should raise_error(NoMethodError)
   end
-  
+
   after(:each) do
     nilize(@twitter)
   end
@@ -137,25 +137,25 @@ describe Twitter::Client, "#bless_models" do
     models = @twitter.send(:bless_models, @models)
     models.each {|model| model.client.should eql(@twitter) }
   end
-  
+
   it "should set client attribute for singular model given to self" do
     model = @twitter.send(:bless_models, @models[0])
     model.client.should eql(@twitter)
   end
-  
+
   it "should delegate to bless_model for singular model case" do
     model = @models[0]
     @twitter.should_receive(:bless_model).with(model).and_return(model)
     @twitter.send(:bless_models, model)
   end
-  
+
   it "should return nil when receiving nil and not raise any exceptions" do
     lambda {
       value = @twitter.send(:bless_models, nil)
       value.should be_nil
     }.should_not raise_error
   end
-  
+
   after(:each) do
     nilize(@twitter, @models)
   end

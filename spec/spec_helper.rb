@@ -8,7 +8,7 @@ if RUBY_VERSION >= "1.9.0"
 end
 
 def require_project_file(file)
-  require(File.join(File.dirname(__FILE__), '..', 'lib', file))  
+  require(File.join(File.dirname(__FILE__), '..', 'lib', file))
 end
 
 require_project_file('twitter')
@@ -17,7 +17,7 @@ require_project_file('twitter/extras')
 
 # Add helper methods here if relevant to multiple _spec.rb files
 
-# Spec helper that sets attribute <tt>att</tt> for given objects <tt>obj</tt> 
+# Spec helper that sets attribute <tt>att</tt> for given objects <tt>obj</tt>
 # and <tt>other</tt> to given <tt>value</tt>.
 def equalizer(obj, other, att, value)
   setter = "#{att}="
@@ -36,7 +36,7 @@ def client_context(file = 'config/twitter.yml')
 end
 
 # Spec helper that returns a mocked <tt>Twitter::Config</tt> object
-# with stubbed attributes and <tt>attrs</tt> for overriding attribute 
+# with stubbed attributes and <tt>attrs</tt> for overriding attribute
 # values.
 def stubbed_twitter_config(config, attrs = {})
   defaults = Twitter::Client.class_eval("@@defaults")
@@ -75,9 +75,9 @@ def project_root_dir
   File.expand_path(File.join(File.dirname(__FILE__), '..'))
 end
 
-# Spec helper that returns stubbed <tt>Net::HTTP</tt> object 
+# Spec helper that returns stubbed <tt>Net::HTTP</tt> object
 # with given <tt>response</tt> and <tt>obj_stubs</tt>.
-# The <tt>host</tt> and <tt>port</tt> are used to initialize 
+# The <tt>host</tt> and <tt>port</tt> are used to initialize
 # the Net::HTTP object.
 def stubbed_net_http(response, obj_stubs = {}, host = 'twitter.com', port = 80)
   http = Net::HTTP.new(host, port)
@@ -86,8 +86,8 @@ def stubbed_net_http(response, obj_stubs = {}, host = 'twitter.com', port = 80)
   http
 end
 
-# Spec helper that returns a mocked <tt>Net::HTTP</tt> object and 
-# stubs out the <tt>request</tt> method to return the given 
+# Spec helper that returns a mocked <tt>Net::HTTP</tt> object and
+# stubs out the <tt>request</tt> method to return the given
 # <tt>response</tt>
 def mas_net_http(response, obj_stubs = {})
   access_token = mock(OAuth::AccessToken, obj_stubs)
@@ -103,25 +103,25 @@ def mas_net_http(response, obj_stubs = {})
   access_token
 end
 
-# Spec helper that returns a mocked <tt>Net::HTTP::Get</tt> object and 
-# stubs relevant class methods and given <tt>obj_stubs</tt> 
+# Spec helper that returns a mocked <tt>Net::HTTP::Get</tt> object and
+# stubs relevant class methods and given <tt>obj_stubs</tt>
 # for endo-specing
 def mas_net_http_get(obj_stubs = {})
   mas_net_http(nil, obj_stubs)
 end
 
-# Spec helper that returns a mocked <tt>Net::HTTP::Post</tt> object and 
-# stubs relevant class methods and given <tt>obj_stubs</tt> 
+# Spec helper that returns a mocked <tt>Net::HTTP::Post</tt> object and
+# stubs relevant class methods and given <tt>obj_stubs</tt>
 # for endo-specing
 def mas_net_http_post(obj_stubs = {})
   mas_net_http(nil, obj_stubs)
 end
 
-# Spec helper that returns a mocked <tt>Net::HTTPResponse</tt> object and 
+# Spec helper that returns a mocked <tt>Net::HTTPResponse</tt> object and
 # stubs given <tt>obj_stubs</tt> for endo-specing.
-# 
-def mas_net_http_response(status = :success, 
-                          body = '{}', 
+#
+def mas_net_http_response(status = :success,
+                          body = '{}',
                           obj_stubs = {})
   response = RSpec::Mocks::Mock.new(Net::HTTPResponse)
   response.stub!(:body).and_return(body)

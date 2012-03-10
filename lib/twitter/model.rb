@@ -3,18 +3,18 @@
 module Twitter
   # Mixin module for model classes.  Includes generic class methods like
   # unmarshal.
-  # 
+  #
   # To create a new model that includes this mixin's features simply:
   #  class NewModel
   #    include Twitter::ModelMixin
   #  end
-  # 
+  #
   # This mixin module automatically includes <tt>Twitter::ClassUtilMixin</tt>
   # features.
-  # 
-  # The contract for models to use this mixin correctly is that the class 
+  #
+  # The contract for models to use this mixin correctly is that the class
   # including this mixin must provide an class method named <tt>attributes</tt>
-  # that will return an Array of attribute symbols that will be checked 
+  # that will return an Array of attribute symbols that will be checked
   # in #eql? override method.  The following would be sufficient:
   #  def self.attributes; @@ATTRIBUTES; end
   module ModelMixin #:nodoc:
@@ -27,7 +27,7 @@ module Twitter
     # Class methods defined for <tt>Twitter::ModelMixin</tt> module.
     module ClassMethods #:nodoc:
       # Unmarshal object singular or plural array of model objects
-      # from JSON serialization.  Currently JSON is only supported 
+      # from JSON serialization.  Currently JSON is only supported
       # since this is all <tt>Twitter4R</tt> needs.
       def unmarshal(raw)
         input = JSON.parse(raw) if raw.is_a?(String)
@@ -44,18 +44,18 @@ module Twitter
         result # plural case
       end
     end
-    
+
     # Instance methods defined for <tt>Twitter::ModelMixin</tt> module.
     module InstanceMethods #:nodoc:
       attr_accessor :client
       # Equality method override of Object#eql? default.
-      # 
+      #
       # Relies on the class using this mixin to provide a <tt>attributes</tt>
-      # class method that will return an Array of attributes to check are 
+      # class method that will return an Array of attributes to check are
       # equivalent in this #eql? override.
-      # 
+      #
       # It is by design that the #eql? method will raise a NoMethodError
-      # if no <tt>attributes</tt> class method exists, to alert you that 
+      # if no <tt>attributes</tt> class method exists, to alert you that
       # you must provide it for a meaningful result from this #eql? override.
       # Otherwise this will return a meaningless result.
       def eql?(other)
@@ -65,35 +65,35 @@ module Twitter
         end
         true
       end
-      
+
       # Returns integer representation of model object instance.
-      # 
+      #
       # For example,
       #  status = Twitter::Status.new(:id => 234343)
       #  status.to_i #=> 234343
       def to_i
         @id
       end
-      
+
       # Returns string representation of model object instance.
-      # 
+      #
       # For example,
       #  status = Twitter::Status.new(:text => 'my status message')
       #  status.to_s #=> 'my status message'
-      # 
-      # If a model class doesn't have a @text attribute defined 
+      #
+      # If a model class doesn't have a @text attribute defined
       # the default Object#to_s will be returned as the result.
       def to_s
         self.respond_to?(:text) ? @text : super.to_s
       end
-      
+
       # Returns hash representation of model object instance.
-      # 
+      #
       # For example,
       #  u = Twitter::User.new(:id => 2342342, :screen_name => 'tony_blair_is_the_devil')
       #  u.to_hash #=> {:id => 2342342, :screen_name => 'tony_blair_is_the_devil'}
-      # 
-      # This method also requires that the class method <tt>attributes</tt> be 
+      #
+      # This method also requires that the class method <tt>attributes</tt> be
       # defined to return an Array of attributes for the class.
       def to_hash
         attrs = self.class.attributes
@@ -105,50 +105,50 @@ module Twitter
         end
         result
       end
-      
+
       # "Blesses" model object.
-      # 
+      #
       # Should be overridden by model class if special behavior is expected
-      # 
+      #
       # Expected to return blessed object (usually <tt>self</tt>)
       def bless(client)
         self.basic_bless(client)
       end
-      
+
       protected
-        # Basic "blessing" of model object 
+        # Basic "blessing" of model object
         def basic_bless(client)
           self.client = client
           self
         end
     end
   end
-  
+
   module AuthenticatedUserMixin
     def self.included(base)
       base.send(:include, InstanceMethods)
     end
- 	
+
     module InstanceMethods
       # Returns an Array of user objects that represents the authenticated
       # user's friends on Twitter.
       def followers(options = {})
         @client.my(:followers, options)
       end
-      
-      # Adds given user as a friend.  Returns user object as given by 
+
+      # Adds given user as a friend.  Returns user object as given by
       # <tt>Twitter</tt> REST server response.
-      # 
-      # For <tt>user</tt> argument you may pass in the unique integer 
+      #
+      # For <tt>user</tt> argument you may pass in the unique integer
       # user ID, screen name or Twitter::User object representation.
       def befriend(user)
       	@client.friend(:add, user)
       end
-      
-      # Removes given user as a friend.  Returns user object as given by 
+
+      # Removes given user as a friend.  Returns user object as given by
       # <tt>Twitter</tt> REST server response.
-      # 
-      # For <tt>user</tt> argument you may pass in the unique integer 
+      #
+      # For <tt>user</tt> argument you may pass in the unique integer
       # user ID, screen name or Twitter::User object representation.
       def defriend(user)
       	@client.friend(:remove, user)
@@ -167,25 +167,25 @@ module Twitter
       def attributes; @@ATTRIBUTES; end
     end
 
-    # Alias to +countryCode+ for those wanting to use consistent naming 
+    # Alias to +countryCode+ for those wanting to use consistent naming
     # convention for attribute
     def country_code
       @countryCode
     end
 
-    # Alias to +parentid+ for those wanting to use consistent naming 
+    # Alias to +parentid+ for those wanting to use consistent naming
     # convention for attribute
     def parent_id
       @parentid
     end
 
-    # Alias to +placeType+ for those wanting to use consistent naming 
+    # Alias to +placeType+ for those wanting to use consistent naming
     # convention for attribute
     def place_type
       @place_type
     end
 
-    # Convenience method to output meaningful representation to STDOUT as per 
+    # Convenience method to output meaningful representation to STDOUT as per
     # Ruby convention
     def inspect
       "#{name} / #{woeid} / #{countryCode}\n#{url}\n"
@@ -193,8 +193,7 @@ module Twitter
 
     protected
       def init
-        puts @placeType
-        @placeType = ::Twitter::PlaceType.new(:name => @placeType["name"], 
+        @placeType = ::Twitter::PlaceType.new(:name => @placeType["name"],
                                               :code => @placeType["code"]) if @placeType.is_a?(Hash)
       end
   end
@@ -215,7 +214,7 @@ module Twitter
   #
   # To find out when this +Trendline+ was created query the +as_of+ attribute.
   # To find out what type +Trendline+ is use the +type+ attribute.
-  # You can iterator over the trends in the +Trendline+ with +each+ or by 
+  # You can iterator over the trends in the +Trendline+ with +each+ or by
   # index, whichever you prefer.
   class Trendline
     include ModelMixin
@@ -242,7 +241,7 @@ module Twitter
       end
     end
 
-    # index operator definition needed to iterate over trends 
+    # index operator definition needed to iterate over trends
     # in the +::Twitter::Trendline+ object using for or otherwise
     def [](index)
       trends[index]
@@ -271,12 +270,12 @@ module Twitter
   # Represents a <tt>Twitter</tt> user
   class User
     include ModelMixin
-    @@ATTRIBUTES = [:id, :name, :description, :location, :screen_name, :url, 
-      :protected, :profile_image_url, :profile_background_color, 
-      :profile_text_color, :profile_link_color, :profile_sidebar_fill_color, 
-      :profile_sidebar_border_color, :profile_background_image_url, 
-      :profile_background_tile, :utc_offset, :time_zone, 
-      :following, :notifications, :favourites_count, :followers_count, 
+    @@ATTRIBUTES = [:id, :name, :description, :location, :screen_name, :url,
+      :protected, :profile_image_url, :profile_background_color,
+      :profile_text_color, :profile_link_color, :profile_sidebar_fill_color,
+      :profile_sidebar_border_color, :profile_background_image_url,
+      :profile_background_tile, :utc_offset, :time_zone,
+      :following, :notifications, :favourites_count, :followers_count,
       :friends_count, :statuses_count, :created_at ]
     attr_accessor(*@@ATTRIBUTES)
 
@@ -286,20 +285,20 @@ module Twitter
 
       # Returns user model object with given <tt>id</tt> using the configuration
       # and credentials of the <tt>client</tt> object passed in.
-      # 
-      # You can pass in either the user's unique integer ID or the user's 
+      #
+      # You can pass in either the user's unique integer ID or the user's
       # screen name.
       def find(id, client)
         client.user(id)
       end
     end
-    
+
     # Override of ModelMixin#bless method.
-    # 
-    # Adds #followers instance method when user object represents 
+    #
+    # Adds #followers instance method when user object represents
     # authenticated user.  Otherwise just do basic bless.
-    # 
-    # This permits applications using <tt>Twitter4R</tt> to write 
+    #
+    # This permits applications using <tt>Twitter4R</tt> to write
     # Rubyish code like this:
     #  followers = user.followers if user.is_me?
     # Or:
@@ -311,23 +310,23 @@ module Twitter
       }) if self.is_me? and not self.respond_to?(:followers)
       self
     end
-    
+
     # Returns whether this <tt>Twitter::User</tt> model object
     # represents the authenticated user of the <tt>client</tt>
     # that blessed it.
     def is_me?
       # TODO: Determine whether we should cache this or not?
       # Might be dangerous to do so, but do we want to support
-      # the edge case where this would cause a problem?  i.e. 
-      # changing authenticated user after initial use of 
+      # the edge case where this would cause a problem?  i.e.
+      # changing authenticated user after initial use of
       # authenticated API.
       # TBD: To cache or not to cache.  That is the question!
-      # Since this is an implementation detail we can leave this for 
-      # subsequent 0.2.x releases.  It doesn't have to be decided before 
+      # Since this is an implementation detail we can leave this for
+      # subsequent 0.2.x releases.  It doesn't have to be decided before
       # the 0.2.0 launch.
       @screen_name == @client.instance_eval("@login")
     end
-    
+
     # Returns an Array of user objects that represents the authenticated
     # user's friends on Twitter.
     def friends
@@ -435,40 +434,40 @@ module Twitter
   # Represents a status posted to <tt>Twitter</tt> by a <tt>Twitter</tt> user.
   class Status
     include ModelMixin
-    @@ATTRIBUTES = [:id, :id_str, :text, :source, :truncated, :created_at, :user, 
-                    :from_user, :to_user, :favorited, :in_reply_to_status_id, 
+    @@ATTRIBUTES = [:id, :id_str, :text, :source, :truncated, :created_at, :user,
+                    :from_user, :to_user, :favorited, :in_reply_to_status_id,
                     :in_reply_to_user_id, :in_reply_to_screen_name, :geo, :entities]
     attr_accessor(*@@ATTRIBUTES)
 
     class << self
       # Used as factory method callback
       def attributes; @@ATTRIBUTES; end
-      
-      # Returns status model object with given <tt>status</tt> using the 
+
+      # Returns status model object with given <tt>status</tt> using the
       # configuration and credentials of the <tt>client</tt> object passed in.
       def find(id, client)
         client.status(:get, id)
       end
-      
-      # Creates a new status for the authenticated user of the given 
+
+      # Creates a new status for the authenticated user of the given
       # <tt>client</tt> context.
-      # 
-      # You MUST include a valid/authenticated <tt>client</tt> context 
+      #
+      # You MUST include a valid/authenticated <tt>client</tt> context
       # in the given <tt>params</tt> argument.
-      # 
+      #
       # For example:
       #  status = Twitter::Status.create(
       #    :text => 'I am shopping for flip flops',
       #    :client => client)
-      # 
+      #
       # An <tt>ArgumentError</tt> will be raised if no valid client context
       # is given in the <tt>params</tt> Hash.  For example,
       #  status = Twitter::Status.create(:text => 'I am shopping for flip flops')
       # The above line of code will raise an <tt>ArgumentError</tt>.
-      # 
+      #
       # The same is true when you do not provide a <tt>:text</tt> key-value
       # pair in the <tt>params</tt> argument given.
-      # 
+      #
       # The Twitter::Status object returned after the status successfully
       # updates on the Twitter server side is returned from this method.
       def create(params)
@@ -483,15 +482,15 @@ module Twitter
       !!@in_reply_to_status_id
     end
 
-    # Convenience method to allow client developers to not have to worry about 
-    # setting the +in_reply_to_status_id+ attribute or prefixing the status 
+    # Convenience method to allow client developers to not have to worry about
+    # setting the +in_reply_to_status_id+ attribute or prefixing the status
     # text with the +screen_name+ being replied to.
     def reply(reply)
       status_reply = "@#{user.screen_name} #{reply}"
-      client.status(:reply, :status => status_reply, 
+      client.status(:reply, :status => status_reply,
                     :in_reply_to_status_id => @id)
     end
-    
+
     protected
       # Constructor callback
       def init
@@ -499,50 +498,50 @@ module Twitter
         @entities = Entities.new(@entities) if @entities.is_a?(Hash)
 
         @created_at = Time.parse(@created_at) if @created_at.is_a?(String)
-      end    
+      end
   end # Status
-  
+
   # Represents a direct message on <tt>Twitter</tt> between <tt>Twitter</tt> users.
   class Message
     include ModelMixin
     @@ATTRIBUTES = [:id, :recipient, :sender, :text, :geo, :created_at]
     attr_accessor(*@@ATTRIBUTES)
-    
+
     class << self
       # Used as factory method callback
       def attributes; @@ATTRIBUTES; end
-      
-      # Raises <tt>NotImplementedError</tt> because currently 
-      # <tt>Twitter</tt> doesn't provide a facility to retrieve 
+
+      # Raises <tt>NotImplementedError</tt> because currently
+      # <tt>Twitter</tt> doesn't provide a facility to retrieve
       # one message by unique ID.
       def find(id, client)
         raise NotImplementedError, 'Twitter has yet to implement a REST API for this.  This is not a Twitter4R library limitation.'
       end
-      
-      # Creates a new direct message from the authenticated user of the 
+
+      # Creates a new direct message from the authenticated user of the
       # given <tt>client</tt> context.
-      # 
-      # You MUST include a valid/authenticated <tt>client</tt> context 
+      #
+      # You MUST include a valid/authenticated <tt>client</tt> context
       # in the given <tt>params</tt> argument.
-      # 
+      #
       # For example:
       #  status = Twitter::Message.create(
       #    :text => 'I am shopping for flip flops',
       #    :recipient => 'anotherlogin',
       #    :client => client)
-      # 
+      #
       # An <tt>ArgumentError</tt> will be raised if no valid client context
       # is given in the <tt>params</tt> Hash.  For example,
       #  status = Twitter::Status.create(:text => 'I am shopping for flip flops')
       # The above line of code will raise an <tt>ArgumentError</tt>.
-      # 
+      #
       # The same is true when you do not provide any of the following
       # key-value pairs in the <tt>params</tt> argument given:
       # * <tt>text</tt> - the String that will be the message text to send to <tt>user</tt>
       # * <tt>recipient</tt> - the user ID, screen_name or Twitter::User object representation of the recipient of the direct message
-      # 
-      # The Twitter::Message object returned after the direct message is 
-      # successfully sent on the Twitter server side is returned from 
+      #
+      # The Twitter::Message object returned after the direct message is
+      # successfully sent on the Twitter server side is returned from
       # this method.
       def create(params)
       	client, text, recipient = params[:client], params[:text], params[:recipient]
@@ -552,7 +551,7 @@ module Twitter
       	client.message(:post, text, recipient)
       end
     end
-    
+
     protected
       # Constructor callback
       def init
@@ -561,14 +560,14 @@ module Twitter
         @created_at = Time.parse(@created_at) if @created_at.is_a?(String)
       end
   end # Message
-  
-  # RateLimitStatus provides information about how many requests you have left 
+
+  # RateLimitStatus provides information about how many requests you have left
   # and when you can resume more requests if your remaining_hits count is zero.
   class RateLimitStatus
     include ModelMixin
     @@ATTRIBUTES = [:remaining_hits, :hourly_limit, :reset_time_in_seconds, :reset_time]
     attr_accessor(*@@ATTRIBUTES)
-    
+
     class << self
       # Used as factory method callback
       def attributes; @@ATTRIBUTES; end

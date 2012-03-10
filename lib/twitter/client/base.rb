@@ -35,16 +35,31 @@ class Twitter::Client
     	response
     end
 
+    # Returns the response of the OAuth/HTTP(s) request for Media/Upload API requests
+    def media_oauth_connect(method, path, params = {}, headers = {}, require_auth = true)
+      atoken = media_access_token
+      uri = media_request_uri(path, params)
+      puts uri
+      body = ::Twitter::MultiPartBody.new(params.delete(:parts))
+      headers['Accept'] = "application/json"
+      headers['Content-Type'] = "multipart/form-data; boundary=#{body.send(:boundary)}"
+      headers['Content-Length'] = body.to_s.bytesize.to_s
+      puts body
+      response = atoken.send(method, uri, body.to_s, http_header.merge(headers))
+    	handle_rest_response(response)
+    	response
+    end
+
     # "Blesses" model object with client information
     def bless_model(model)
     	model.bless(self) if model
     end
-    
+
     def bless_models(list)
       return bless_model(list) if list.respond_to?(:client=)
     	list.collect { |model| bless_model(model) } if list.respond_to?(:collect)
     end
-    
+
   private
   @@http_header = nil
 
@@ -58,7 +73,7 @@ class Twitter::Client
         cfg = self.class.config
         key ||= cfg.oauth_consumer_token
         secret ||= cfg.oauth_consumer_secret
-        @rest_consumer = OAuth::Consumer.new(key, secret, 
+        @rest_consumer = OAuth::Consumer.new(key, secret,
                                              :site => construct_site_url,
                                              :proxy => construct_proxy_url)
         http = @rest_consumer.http
@@ -67,38 +82,58 @@ class Twitter::Client
       @rest_consumer
     end
 
-    def rest_access_token
-      unless @rest_access_token
-        access = @oauth_access
-        if access
-          key = access[:key] || access["key"]
-          secret = access[:secret] || access["secret"]
-        else
-          raise Error, "No access tokens are set"
-        end
-        @rest_access_token = OAuth::AccessToken.new(rest_consumer, key, secret)
-      end
-      @rest_access_token
-    end
-    
     def search_consumer
       unless @search_consumer
         cfg = self.class.config
         consumer = @oauth_consumer
         if consumer
-          key = consumer[:key] || consumer["key"] 
+          key = consumer[:key] || consumer["key"]
           secret = consumer[:secret] || consumer["secret"]
         end
         cfg = self.class.config
         key ||= cfg.oauth_consumer_token
         secret ||= cfg.oauth_consumer_secret
-        @search_consumer = OAuth::Consumer.new(key, secret, 
+        @search_consumer = OAuth::Consumer.new(key, secret,
                                                :site => construct_site_url(:search),
                                                :proxy => construct_proxy_url)
         http = @search_consumer.http
         http.read_timeout = cfg.timeout
       end
       @search_consumer
+    end
+
+    def media_consumer
+      unless @media_consumer
+        cfg = self.class.config
+        consumer = @oauth_consumer
+        if consumer
+          key = consumer[:key] || consumer["key"]
+          secret = consumer[:secret] || consumer["secret"]
+        end
+        cfg = self.class.config
+        key ||= cfg.oauth_consumer_token
+        secret ||= cfg.oauth_consumer_secret
+        @media_consumer = OAuth::Consumer.new(key, secret,
+                                               :site => construct_site_url(:media),
+                                               :proxy => construct_proxy_url)
+        http = @media_consumer.http
+        http.read_timeout = cfg.timeout
+      end
+      @media_consumer
+    end
+
+    def rest_access_token
+      unless @rest_access_token
+        access = @oauth_access
+        if access
+          key = access[:key] || access["key"]
+          secret = access[:secret] || access["secret"]
+          @rest_access_token = OAuth::AccessToken.new(rest_consumer, key, secret)
+        else
+          raise ::Twitter::Twitter4rError.new(:message => "No access tokens are set")
+        end
+      end
+      @rest_access_token
     end
 
     def search_access_token
@@ -110,28 +145,37 @@ class Twitter::Client
       @search_access_token
     end
 
+    def media_access_token
+      unless @media_access_token
+        key = @oauth_access[:key] || @oauth_access["key"]
+        secret = @oauth_access[:secret] || @oauth_access["secret"]
+        @media_access_token = OAuth::AccessToken.new(media_consumer, key, secret)
+      end
+      @media_access_token
+    end
+
     def raise_rest_error(response, uri = nil)
       map = JSON.parse(response.body)
       error = Twitter::RESTError.registry[response.code]
-      raise error.new(:code => response.code, 
+      raise error.new(:code => response.code,
                       :message => response.message,
                       :error => map["error"],
-                      :uri => uri)        
+                      :uri => uri)
     end
-    
+
     def handle_rest_response(response, uri = nil)
       unless response.is_a?(Net::HTTPSuccess)
         raise_rest_error(response, uri)
       end
     end
-    
+
     def http_header
-      # can cache this in class variable since all "variables" used to 
-      # create the contents of the HTTP header are determined by other 
+      # can cache this in class variable since all "variables" used to
+      # create the contents of the HTTP header are determined by other
       # class variables that are not designed to change after instantiation.
-      @@http_header ||= { 
+      @@http_header ||= {
       	'User-Agent' => "Twitter4R v#{Twitter::Version.to_version} [#{self.class.config.user_agent}]",
-      	'Accept' => 'text/x-json',
+      	'Accept' => 'application/json',
       	'X-Twitter-Client' => self.class.config.application_name,
       	'X-Twitter-Client-Version' => self.class.config.application_version,
       	'X-Twitter-Client-URL' => self.class.config.application_url,
@@ -144,21 +188,28 @@ class Twitter::Client
       uri << "?#{params.to_http_str}" if params
       uri
     end
-    
+
     def search_request_uri(path, params = nil)
       uri = "#{self.class.config.search_path_prefix}#{path}"
       uri << "?#{params.to_http_str}" if params
       uri
     end
-    
+
+    def media_request_uri(path, params = nil)
+      "#{self.class.config.media_path_prefix}#{path}"
+    end
+
     def uri_components(service = :rest)
       case service
       when :rest
-        return self.class.config.protocol, self.class.config.host, self.class.config.port, 
-          self.class.config.path_prefix
+        return self.class.config.protocol, self.class.config.host,
+          self.class.config.port, self.class.config.path_prefix
       when :search
-        return self.class.config.search_protocol, self.class.config.search_host, 
+        return self.class.config.search_protocol, self.class.config.search_host,
           self.class.config.search_port, self.class.config.search_path_prefix
+      when :media
+        return self.class.config.media_protocol, self.class.config.media_host,
+          self.class.config.media_port, self.class.config.media_path_prefix
       end
     end
 

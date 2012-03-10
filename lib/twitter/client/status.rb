@@ -2,41 +2,44 @@ class Twitter::Client
   @@STATUS_URIS = {
   	:get => '/statuses/show.json',
   	:post => '/statuses/update.json',
+    :post_multipart => '/statuses/update_with_media.json',
   	:delete => '/statuses/destroy.json',
   	:reply => '/statuses/update.json'
   }
-  
+
   # Provides access to individual statuses via Twitter's Status APIs
-  # 
+  #
   # <tt>action</tt> can be of the following values:
   # * <tt>:get</tt> to retrieve status content.  Assumes <tt>value</tt> given responds to :to_i message in meaningful way to yield intended status id.
   # * <tt>:post</tt> to publish a new status
   # * <tt>:delete</tt> to remove an existing status.  Assumes <tt>value</tt> given responds to :to_i message in meaningful way to yield intended status id.
   # * <tt>:reply</tt> to reply to an existing status.  Assumes <tt>value</tt> given is <tt>Hash</tt> which contains <tt>:in_reply_to_status_id</tt> and <tt>:status</tt>
-  # 
+  #
   # <tt>value</tt> should be set to:
   # * the status identifier for <tt>:get</tt> case
   # * the status text message for <tt>:post</tt> case
   # * none necessary for <tt>:delete</tt> case
-  # 
+  #
   # Examples:
   #  twitter.status(:get, 107786772)
   #  twitter.status(:post, "New Ruby open source project Twitter4R version 0.2.0 released.")
   #  twitter.status(:delete, 107790712)
   #  twitter.status(:reply, :in_reply_to_status_id => 1390482942342, :status => "@t4ruby This new v0.7.0 release is da bomb! #ruby #twitterapi #twitter4r")
   #  twitter.status(:post, "My brand new status in all its glory here tweeted from Greenwich (the real one). #withawesomehashtag #booyah", :lat => 0, :long => 0)
-  # 
-  # An <tt>ArgumentError</tt> will be raised if an invalid <tt>action</tt> 
+  #  twitter.status(:post, :media => [media1, media2], :status => "My brand new status in all its glory here tweeted from Greenwich (the real one). #withawesomehashtag #booyah", :lat => 0, :long => 0)
+  #
+  # An <tt>ArgumentError</tt> will be raised if an invalid <tt>action</tt>
   # is given.  Valid actions are:
   # * +:get+
   # * +:post+
   # * +:delete+
   #
-  # The third argument +options+ sends on a Hash to the Twitter API with the following keys allowed:
+  # The options argument sends on a Hash to the Twitter API with the following keys allowed:
   # * +:lat+ - latitude (for posting geolocation)
   # * +:long+ - longitude (for posting geolocation)
   # * +:place_id+ - using a place ID give by geo/reverse_geocode
   # * +:display_coordinates+ - whether or not to put a pin in the exact coordinates
+  # * +:media+ - media enclosures to upload and embed in status
   def status(action, value = nil)
     return self.timeline_for(action, value || {}) if :replies == action
     raise ArgumentError, "Invalid status action: #{action}" unless @@STATUS_URIS.keys.member?(action)
@@ -47,14 +50,31 @@ class Twitter::Client
     when :get
       response = rest_oauth_connect(:get, uri, {:id => value.to_i})
     when :post
-      if value.is_a?(Hash)
+      if value.is_a?(Hash) && value.key?(:media)
+        params = {
+          :parts => [
+            Twitter::MediaPart.new(value[:media].merge(:name => "media[]")),
+            Twitter::MediaPart.new(
+              :body => value[:status],
+              :content_type => "text/plain",
+              :name => "status")
+          ]
+        }
+        action = :post_multipart
+        response = media_oauth_connect(:post, @@STATUS_URIS[action], params)
+      elsif value.is_a?(Hash)
         params = value.delete_if { |k, v|
           ![:status, :lat, :long, :place_id, :display_coordinates].member?(k)
         }
+        action = :post
+        response = rest_oauth_connect(action, uri,
+          params.merge(:source => self.class.config.source))
       else
         params = {:status => value}
+        action = :post
+        response = rest_oauth_connect(action, uri,
+          params.merge(:source => self.class.config.source))
       end
-      response = rest_oauth_connect(:post, uri, params.merge(:source => self.class.config.source))
     when :delete
       response = rest_oauth_connect(:delete, uri, {:id => value.to_i})
     when :reply
