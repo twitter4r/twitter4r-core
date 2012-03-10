@@ -26,7 +26,7 @@ class Twitter::Client
   #  twitter.status(:delete, 107790712)
   #  twitter.status(:reply, :in_reply_to_status_id => 1390482942342, :status => "@t4ruby This new v0.7.0 release is da bomb! #ruby #twitterapi #twitter4r")
   #  twitter.status(:post, "My brand new status in all its glory here tweeted from Greenwich (the real one). #withawesomehashtag #booyah", :lat => 0, :long => 0)
-  #  twitter.status(:post, :media => [media1, media2], :status => "My brand new status in all its glory here tweeted from Greenwich (the real one). #withawesomehashtag #booyah", :lat => 0, :long => 0)
+  #  twitter.status(:post, :media => {:filename => "awesome_photo.png", :content_type => "image/png"}, :status => "My brand new status in all its glory here tweeted from Greenwich (the real one). #withawesomehashtag #booyah", :lat => 0, :long => 0)
   #
   # An <tt>ArgumentError</tt> will be raised if an invalid <tt>action</tt>
   # is given.  Valid actions are:
